@@ -326,7 +326,6 @@ func (r *response) responseMain() {
 						r.userHTML = nil
 						r.adminInput = nil
 						r.userInput = nil
-
 					}
 					fp, ok := registry.GetFeedbackPlugins(m.From)
 					if !ok {
@@ -447,6 +446,21 @@ func (r *response) responseMain() {
 				}
 			}()
 		case <-done:
+			// Function to use defer
+			func() {
+				r.l.Lock()
+				defer r.l.Unlock()
+				if r.currentPlugin != nil {
+					// Reset plugin
+					r.currentPlugin.Deactivate()
+					r.currentPlugin = nil
+					r.currentPluginName = ""
+					r.adminHTML = nil
+					r.userHTML = nil
+					r.adminInput = nil
+					r.userInput = nil
+				}
+			}()
 			log.Printf("stopping %s", r.Path)
 			return
 		}
