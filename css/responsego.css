@@ -1,5 +1,6 @@
 :root {
     --primary-colour: #25EDED;
+    --primary-colour-dark: #179e9e;
     --contra-light: #FF8989;
     --contra-dark: #FF1212;
     --table-hover: #BCFBFB;
@@ -152,4 +153,8 @@ pre {
 
 .chart {
     max-width: 100vmin;
+}
+
+.clickImage:active {
+    background-color: var(--primary-colour-dark);
 }

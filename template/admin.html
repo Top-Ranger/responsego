@@ -41,6 +41,7 @@
             <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/faster.svg" alt="{{.Translation.Faster}}"/></td>
             <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/question.svg" alt="{{.Translation.Question}}"/></td>
             <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/good.svg" alt="{{.Translation.Good}}"/></td>
+            <td style="border: none;"><a onclick="resetIcons()">Reset icon count</a></td>
           </tr>
           <tr style="border: none; background-color: inherit;">
             <td style="border: none;"><div id="_slower">0</div></td>
@@ -48,9 +49,9 @@
             <td style="border: none;"><div id="_faster">0</div></td>
             <td style="border: none;"><div id="_question">0</div></td>
             <td style="border: none;"><div id="_good">0</div></td>
+            <td style="border: none;"></td>
           </tr>
         </table>
-        &nbsp;<p><a onclick="resetIcons()">Reset icon count</a></p>
     </div>
 
     <div id="_active" class="even contentbox online" style="height: 30%">

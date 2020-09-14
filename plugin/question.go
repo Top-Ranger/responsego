@@ -66,8 +66,8 @@ const questionUser = `
 <table style="border: none;">
 {{range $i, $e := .Answers}}
     <tr style="border: none;">
-        <td style="border: none;">{{$e}}</td>
-		<td style="border: none;"><button onclick="sendData('Question', '{{$i}}')">{{$.Translation.Submit}}</button></td>
+        <td id="Question_cell_{{$i}}" style="border: none;">{{$e}}</td>
+		<td style="border: none;"><button id="Question_button_{{$i}}" onclick="sendData('Question','{{$i}}');document.getElementById('Question_cell_{{$i}}').style.backgroundColor='var(--primary-colour-dark)';var e=document.getElementById('Question_button_0'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_1'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_2'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_3'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_4'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_5'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_6'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_7'); if(e!=null){e.disabled=true;};var e=document.getElementById('Question_button_8'); if(e!=null){e.disabled=true;};">{{$.Translation.Submit}}</button></td>
 	</tr>
 {{end}}
 </table>
