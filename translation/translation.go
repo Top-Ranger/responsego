@@ -45,6 +45,7 @@ type Translation struct {
 	DisplayQuestion string
 	Submit          string
 	Finish          string
+	DisplayBlank    string
 }
 
 const defaultLanguage = "en"

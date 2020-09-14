@@ -14,5 +14,6 @@
     "DisplayText": "Text anzeigen",
     "DisplayQuestion": "Question",
     "Submit": "Absenden",
-    "Finish": "Beenden"
+    "Finish": "Beenden",
+    "DisplayBlank": "Leere"
 }
