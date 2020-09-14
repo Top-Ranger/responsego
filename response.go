@@ -168,6 +168,7 @@ func (r *response) removeWS(id int) {
 	delete(r.users, id)
 }
 
+// NewResponse creates a new response object (including startup of all required goroutines).
 func NewResponse(path, password string) *response {
 	var ctx context.Context
 	var cancel context.CancelFunc
