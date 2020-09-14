@@ -72,55 +72,6 @@ func init() {
 	}
 }
 
-const startpage = `
-<h1>PollGo!</h1>
-
-<script>
-function toRandomPage() {
-  var b = new Uint8Array(33);
-  window.crypto.getRandomValues(b);
-  var target = window.location.href;
-  if(target.slice(-1) != "/") {
-    target = target + "/";
-  }
-  var id = btoa(String.fromCharCode.apply(null, b));
-  id = id.replace(new RegExp("/", "g"), "-")
-  target = target + id
-  window.location.href = target;
-}
-</script>
-
-<div id="__randompoll" hidden>
-<button onclick="toRandomPage()">%s</button>
-</div>
-
-<script>var e = document.getElementById("__randompoll"); e.removeAttribute("hidden");</script>
-
-<div class="even">
-<h2>%s:</h2>
-<noscript>%s</noscript>
-<ul class="starlist" id="starlist">
-</ul>
-</div>
-
-<script>
-try {
-  var a = JSON.parse(localStorage.getItem("pollgo_star"));
-  a.sort();
-  var t = document.getElementById("starlist");
-  for(var i = 0; i < a.length; i++) {
-	var link = document.createElement("A");
-	link.href = "/" + a[i];
-	link.textContent = a[i];
-	var li = document.createElement("LI");
-	li.appendChild(link);
-	t.appendChild(li);
-  }
-} catch (e) {
-}
-</script>
-`
-
 type textTemplateStruct struct {
 	Text        template.HTML
 	Translation translation.Translation
