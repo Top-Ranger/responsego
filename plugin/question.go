@@ -116,6 +116,7 @@ type question struct {
 	Question        string
 	QuestionAnswers []string
 	AnswerCount     []int
+	NumberChanged   bool
 	AnswerLock      sync.Mutex
 	Finished        bool
 }
@@ -209,6 +210,7 @@ func (q *question) Activate(b []byte) error {
 					q.AnswerLock.Lock()
 					if i < len(q.AnswerCount) {
 						q.AnswerCount[i]++
+						q.NumberChanged = true
 					}
 					q.AnswerLock.Unlock()
 				}
@@ -216,9 +218,11 @@ func (q *question) Activate(b []byte) error {
 			case <-ticker.C:
 				q.AnswerLock.Lock()
 				finished := q.Finished
+				changed := q.NumberChanged
+				q.NumberChanged = false
 				q.AnswerLock.Unlock()
 
-				if !finished {
+				if !finished && changed {
 					q.adminHTML <- q.getAdminPage()
 				}
 			case <-done:

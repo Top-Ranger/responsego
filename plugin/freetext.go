@@ -80,9 +80,10 @@ type freetext struct {
 	ctx        context.Context
 	cancel     context.CancelFunc
 
-	Question   string
-	Answers    []string
-	AnswerLock sync.Mutex
+	Question      string
+	Answers       []string
+	NumberChanged bool
+	AnswerLock    sync.Mutex
 }
 
 func (f *freetext) ConfigHTML() template.HTML {
@@ -135,10 +136,17 @@ func (f *freetext) Activate(b []byte) error {
 			case b := <-f.userInput:
 				f.AnswerLock.Lock()
 				f.Answers = append(f.Answers, string(b))
+				f.NumberChanged = true
 				f.AnswerLock.Unlock()
 
 			case <-ticker.C:
-				f.adminHTML <- f.getAdminPage()
+				f.AnswerLock.Lock()
+				changed := f.NumberChanged
+				f.NumberChanged = false
+				f.AnswerLock.Unlock()
+				if changed {
+					f.adminHTML <- f.getAdminPage()
+				}
 			case <-done:
 				return
 			}
