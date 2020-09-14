@@ -108,6 +108,7 @@ func (f *freetext) ReceiveAdminChannel(c <-chan []byte) {
 }
 
 func (f *freetext) Activate(b []byte) error {
+	f.Question = string(b)
 	go func() {
 		td := freetextUserStruct{
 			Question:    f.Question,
