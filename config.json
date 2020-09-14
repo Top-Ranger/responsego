@@ -1,0 +1,10 @@
+ {
+    "Language": "en",
+    "Address": "localhost:22122",
+    "GCMinutes": 5,
+    "PathImpressum": "impressum.md",
+    "PathDSGVO": "DSGVO.md",
+    "ServerPath": "/responsego",
+    "ServerName": "localhost:22122",
+    "LogFailedLogin": true
+ }

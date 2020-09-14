@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html lang="{{.Translation.Language}}">
+
+<head>
+  <title>ResponseGo!</title>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow"/>
+  <meta name="author" content="Marcus Soll"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="author" href="https://msoll.eu/">
+  <script src="{{.ServerPath}}/js/moment-with-locales-2.24.0.js"></script>
+  <script src="{{.ServerPath}}/js/Chart-2.9.3.js"></script>
+  <link rel="stylesheet" href="{{.ServerPath}}/css/Chart-2.9.3.css">
+  <link rel="stylesheet" href="{{.ServerPath}}/css/responsego.css">
+  <link rel="icon" type="image/vnd.microsoft.icon" href="{{.ServerPath}}/static/favicon.ico">
+</head>
+
+<body>
+  <header>
+    <div style="margin-left: 1%">
+      ResponseGo!
+    </div>
+  </header>
+  
+  <div class="mainbox">
+    <div class="offline">
+      <h1>{{.Translation.NoConnection}}</h1>
+    </div>
+
+    <div class="even contentbox online" style="height: 10%">
+        <!---Metadata-->
+        <p>{{.Translation.ParticipantLink}}: {{.URL}} - <a href="{{.QR}}" target="_blank">QR-Code</a></p>
+    </div>
+
+    <div class="contentbox online" style="height: 20%">
+        <!---Symbols-->
+        <table style="border: none;">
+          <tr style="border: none; background-color: inherit;">
+            <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/slower.svg" alt="{{.Translation.Slower}}"/></td>
+            <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/break.svg" alt="{{.Translation.Break}}"/></td>
+            <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/faster.svg" alt="{{.Translation.Faster}}"/></td>
+            <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/question.svg" alt="{{.Translation.Question}}"/></td>
+            <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/good.svg" alt="{{.Translation.Good}}"/></td>
+          </tr>
+          <tr style="border: none; background-color: inherit;">
+            <td style="border: none;"><div id="_slower">0</div></td>
+            <td style="border: none;"><div id="_break">0</div></td>
+            <td style="border: none;"><div id="_faster">0</div></td>
+            <td style="border: none;"><div id="_question">0</div></td>
+            <td style="border: none;"><div id="_good">0</div></td>
+          </tr>
+        </table>
+        &nbsp;<p><a onclick="resetIcons()">Reset icon count</a></p>
+    </div>
+
+    <div id="_active" class="even contentbox online" style="height: 30%">
+        <!---Current page-->
+    </div>
+
+    <div class="odd contentbox online" style="height: 40%">
+        <!---Elements-->
+        {{range $i, $e := .Elements}}
+        {{if ne $i 0}}
+        <hr>
+        {{end}}
+        <div>
+          {{$e}}
+        </div>
+        {{end}}
+    </div>
+  </div>
+
+  <script>
+    function setOffline(b) {
+      if (b) {
+        var h = document.getElementsByClassName("online")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.add("hidden")
+        }
+        var h = document.getElementsByClassName("offline")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.remove('hidden');
+        }
+      } else {
+        var h = document.getElementsByClassName("offline")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.add("hidden")
+        }
+        var h = document.getElementsByClassName("online")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.remove('hidden');
+        }
+      }
+    }
+
+    setOffline(true);
+
+    var ws;
+
+    var hostname = window.location.hostname;
+    var path = window.location.pathname;
+    var port = window.location.port;
+    var protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    var ws = new WebSocket(protocol + '://' + hostname + ":" + port + path + "?ws=1&admin={{.Password}}");
+
+    ws.onclose = function () {
+      setOffline(true);
+    };
+
+    ws.onopen = function() {
+      setOffline(false);
+    };
+
+    ws.onmessage = function(event){
+      var data = JSON.parse(event.data);
+      if(data.Action === "slower") {
+        try {
+          document.getElementById("_slower").innerText = data.Data
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+      if(data.Action === "break") {
+        try {
+          document.getElementById("_break").innerText = data.Data
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+      if(data.Action === "faster") {
+        try {
+          document.getElementById("_faster").innerText = data.Data
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+      if(data.Action === "question") {
+        try {
+          document.getElementById("_question").innerText = data.Data
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+      if(data.Action === "good") {
+        try {
+          document.getElementById("_good").innerText = data.Data
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+      if(data.Action === "html") {
+        try {
+          var a = document.getElementById("_active");
+          a.innerHTML = data.Data;
+          var as = a.getElementsByTagName("script")
+          for(var i = 0; i < as.length; i++) {
+            eval(as[i].innerText)
+          }
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+    };
+
+    function sendActivate(from, data) {
+      var s = JSON.stringify({"From": from, "Action": "activate", "Data": data});
+      try{
+        ws.send(s);
+      } catch (e) {
+        console.log(e);
+        ws.close(4000, e.toString().substring(0, 40));
+      }
+    }
+
+    function sendData(from, data) {
+      var s = JSON.stringify({"From": from, "Action": "admin", "Data": data});
+      try{
+        ws.send(s);
+      } catch (e) {
+        console.log(e);
+        ws.close(4000, e.toString().substring(0, 40));
+      }
+    }
+
+    function resetIcons() {
+      var s = JSON.stringify({"From": "_global", "Action": "resetIcon"});
+      try{
+        ws.send(s);
+      } catch (e) {
+        console.log(e);
+        ws.close(4000, e.toString().substring(0, 40));
+      }
+    }
+  </script>
+
+
+  <footer>
+    <div>
+      {{.Translation.CreatedBy}} <a href="https://msoll.eu/"><u>Marcus Soll</u></a> - <a href="{{.ServerPath}}/impressum.html"><u>{{.Translation.Impressum}}</u></a> - <a href="{{.ServerPath}}/dsgvo.html"><u>{{.Translation.PrivacyPolicy}}</u></a>
+    </div>
+  </footer>
+</body>
+
+</html>

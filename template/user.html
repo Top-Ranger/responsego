@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html lang="{{.Translation.Language}}">
+
+<head>
+  <title>ResponseGo!</title>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow"/>
+  <meta name="author" content="Marcus Soll"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="author" href="https://msoll.eu/">
+  <script src="{{.ServerPath}}/js/moment-with-locales-2.24.0.js"></script>
+  <script src="{{.ServerPath}}/js/Chart-2.9.3.js"></script>
+  <link rel="stylesheet" href="{{.ServerPath}}/css/Chart-2.9.3.css">
+  <link rel="stylesheet" href="{{.ServerPath}}/css/responsego.css">
+  <link rel="icon" type="image/vnd.microsoft.icon" href="{{.ServerPath}}/static/favicon.ico">
+</head>
+
+<body>
+  <header>
+    <div style="margin-left: 1%">
+      ResponseGo!
+    </div>
+  </header>
+
+  <div class="mainbox">
+    <div class="offline">
+      <h1>{{.Translation.NoConnection}}</h1>
+    </div>
+
+    <div class="contentbox online" style="height: 20%">
+        <!---Symbols-->
+        <table style="border: none;">
+            <tr style="border: none; background-color: inherit;">
+              <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/slower.svg" alt="{{.Translation.Slower}}" onclick="sendIcon('slower')"/></td>
+              <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/break.svg" alt="{{.Translation.Break}}" onclick="sendIcon('break')"/></td>
+              <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/faster.svg" alt="{{.Translation.Faster}}" onclick="sendIcon('faster')"/></td>
+              <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/question.svg" alt="{{.Translation.Question}}" onclick="sendIcon('question')"/></td>
+              <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/good.svg" alt="{{.Translation.Good}}" onclick="sendIcon('good')"/></td>
+            </tr>
+            <tr style="border: none; background-color: inherit;">
+              <td style="border: none;"><div id="_slower">{{.Translation.Slower}}</div></td>
+              <td style="border: none;"><div id="_break">{{.Translation.Break}}</div></td>
+              <td style="border: none;"><div id="_faster">{{.Translation.Faster}}</div></td>
+              <td style="border: none;"><div id="_question">{{.Translation.Question}}</div></td>
+              <td style="border: none;"><div id="_good">{{.Translation.Good}}</div></td>
+            </tr>
+          </table>
+  
+    </div>
+
+    <div id="_active" class="even contentbox online" style="height: 80%">
+        <!---Elements-->
+    </div>
+  </div>
+
+  <script>
+    function setOffline(b) {
+      if (b) {
+        var h = document.getElementsByClassName("online")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.add("hidden")
+        }
+        var h = document.getElementsByClassName("offline")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.remove('hidden');
+        }
+      } else {
+        var h = document.getElementsByClassName("offline")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.add("hidden")
+        }
+        var h = document.getElementsByClassName("online")
+        for(var i = 0; i < h.length; i++) {
+          h[i].classList.remove('hidden');
+        }
+      }
+    }
+
+    setOffline(true);
+
+    var ws
+
+    var hostname = window.location.hostname;
+    var path = window.location.pathname;
+    var port = window.location.port;
+    var protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    var ws = new WebSocket(protocol + '://' + hostname + ":" + port + path + "?ws=1");
+
+    ws.onclose = function () {
+      setOffline(true);
+    };
+
+    ws.onopen = function() {
+      setOffline(false);
+    };
+
+    ws.onmessage = function(event){
+      var data = JSON.parse(event.data);
+      if(data.Action === "html") {
+        try {
+          var a = document.getElementById("_active");
+          a.innerHTML = data.Data;
+          var as = a.getElementsByTagName("script")
+          for(var i = 0; i < as.length; i++) {
+            eval(as[i].innerText)
+          }
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+    };
+
+    function sendData(from, data) {
+      var s = JSON.stringify({"From": from, "Action": "user", "Data": data})
+      try{
+        ws.send(s);
+      } catch (e) {
+        console.log(e)
+        ws.close(4000, e.toString().substring(0, 40));
+      }
+    }
+
+    function sendIcon(icon) {
+      var s = JSON.stringify({"From": "_global", "Action": "icon", "Data": icon})
+      try{
+        ws.send(s);
+      } catch (e) {
+        console.log(e)
+        ws.close(4000, e.toString().substring(0, 40));
+      }
+    }
+  </script>
+
+  <footer>
+    <div>
+      {{.Translation.CreatedBy}} <a href="https://msoll.eu/"><u>Marcus Soll</u></a> - <a href="{{.ServerPath}}/impressum.html"><u>{{.Translation.Impressum}}</u></a> - <a href="{{.ServerPath}}/dsgvo.html"><u>{{.Translation.PrivacyPolicy}}</u></a>
+    </div>
+  </footer>
+</body>
+
+</html>

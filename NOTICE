@@ -1,0 +1,29 @@
+++++++++++++++++++++++++++++++++++++++++++++
+ResponseGo! - A simple response system
+   created by Marcus Soll (https://msoll.eu)
+++++++++++++++++++++++++++++++++++++++++++++
+
+ResponseGo! is my personal response software.
+It was developed with simplicity in mind - both in deployment and architecture.
+As such, it might contain certain restrictions in terms of extensibility.
+I developed the software with my specific needs in mind. It contains everything I need.
+It might not fit your needs. That's ok.
+But don't expect me to go out of my way implementing your requests.
+I'm releasing the software in the hope that it might be helpful to others.
+
+To run it, simply use the following commands:
+go build
+./responsego
+
+A sample configration can be found at 'config.json'.
+To create a response link, simply browse to the future location of the response page.
+No seperate creation is needed.
+
+ResponseGo! is licenced under Apache-2.0.
+
+++++++++++++++++++++++++++++++++++++++++++++
+Bundeled libraries
+++++++++++++++++++++++++++++++++++++++++++++
+ResponseGo! is bundeled with the Oxygen font, which is licenced under the SIL Open Font License, Version 1.1.
+ResponseGo! is bundeled with Chart.js v2.9.3 (https://www.chartjs.org), which is licenced under the MIT License.
+ResponseGo! is bundeled with moment.js 2.24.0 (https://momentjs.com/), which is licenced under the MIT License.
