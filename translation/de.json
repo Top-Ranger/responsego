@@ -5,15 +5,18 @@
     "PrivacyPolicy": "Datenschutzerklärung",
     "ParticipantLink": "Teilnehmer-Link",
     "Faster": "schneller",
-	"Break": "Pause",
-	"Slower": "langsamer",
-	"Question": "Frage",
-	"Good": "gut",
+    "Break": "Pause",
+    "Slower": "langsamer",
+    "Question": "Frage",
+    "Good": "gut",
     "NoConnection": "Keine Verbindung",
     "Activate": "Aktivieren",
     "DisplayText": "Text anzeigen",
     "DisplayQuestion": "Question",
     "Submit": "Absenden",
     "Finish": "Beenden",
-    "DisplayBlank": "Leere"
+    "DisplayBlank": "Leere",
+    "DisplayFreeText": "Freitext",
+    "FreeTextQuestion": "Frage für Freitext",
+    "UpdateAll5Seconds": "Ergebnisse werden alle 5 Sekunden aktualisiert."
 }

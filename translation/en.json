@@ -15,5 +15,8 @@
     "DisplayQuestion": "Question",
     "Submit": "Submit",
     "Finish": "Finish",
-    "DisplayBlank": "Blank"
+    "DisplayBlank": "Blank",
+    "DisplayFreeText":  "Free Text",
+    "FreeTextQuestion": "Question for free text",
+    "UpdateAll5Seconds": "Results get updated all 5 seconds."
 }
