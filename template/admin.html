@@ -169,6 +169,7 @@
         list.appendChild(li);
       }
 
+      localStorage.setItem(lsName, data);
       document.getElementById('list_saved_elements').replaceWith(list);
     }
     loadSaved(localStorage.getItem(lsName))
