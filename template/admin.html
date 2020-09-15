@@ -156,8 +156,8 @@
       for(var i = 0; i < save.length; i++) {
         var a = document.createElement("A");
         a.textContent = save[i].Description;
-        var f = save[i].From;
-        var d = save[i].Data;
+        let f = save[i].From;
+        let d = save[i].Data;
         a.onclick = function() {
           sendActivate(f, d);
         }
