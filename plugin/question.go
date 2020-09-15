@@ -59,6 +59,7 @@ const questionConfig = `
     </tr>
 </table>
 <p><button onclick="sendActivate('Question', JSON.stringify({'1': document.getElementById('Question_1').value, '2': document.getElementById('Question_2').value, '3': document.getElementById('Question_3').value, '4': document.getElementById('Question_4').value, '5': document.getElementById('Question_5').value, '6': document.getElementById('Question_6').value, '7': document.getElementById('Question_7').value, '8': document.getElementById('Question_8').value, '9': document.getElementById('Question_9').value, 'q': document.getElementById('Question').value}))">%s</button></p>
+<p><button onclick="saveElement('Question', JSON.stringify({'1': document.getElementById('Question_1').value, '2': document.getElementById('Question_2').value, '3': document.getElementById('Question_3').value, '4': document.getElementById('Question_4').value, '5': document.getElementById('Question_5').value, '6': document.getElementById('Question_6').value, '7': document.getElementById('Question_7').value, '8': document.getElementById('Question_8').value, '9': document.getElementById('Question_9').value, 'q': document.getElementById('Question').value}), '%s: '+document.getElementById('Question').value)">%s</button></p>
 `
 
 const questionUser = `
@@ -123,7 +124,7 @@ type question struct {
 
 func (q *question) ConfigHTML() template.HTML {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(questionConfig, template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.Activate)))
+	return template.HTML(fmt.Sprintf(questionConfig, template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (q *question) AdminHTMLChannel(c chan<- template.HTML) {

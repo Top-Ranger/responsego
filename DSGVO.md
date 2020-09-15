@@ -14,6 +14,8 @@ Sie haben unter Umständen die Möglichkeit, Rückmeldung über die Webseite zu 
 
 Sie haben unter Umständen die Möglichkeit, Rückmeldungen durch die Webseite zu erfragen. Sollten Sie dies tun, so werden die Daten gespeichert auf Grundlage ihrer Einwilligung nach DSGVO Art. 6. Alle eingegebenen Daten können an alle Teilnehmer weitergeleitet werden (je nach Art der Rückmeldung), die über die Webseite Ihnen Rückmeldung geben wollen. Sollten Sie Rückmeldungen erhalten, so sind Sie verpflichtet, diese entsprechend der Datenschutzgesetze handzuhaben. Ihre Daten werden nicht dauerhaft auf dem Server gespeichert.
 
+Wenn Sie Elemente speichern, so werden die gespeicherten Elemente ausschließlich auf Ihrem Endgerät (z.B. Browser) gespeichert und nicht zum Server übertragen / nicht vom Server gespeichert. Bitte nutzen Sie die Funktionen Ihres Endgerätes, falls sie die Informationen löschen wollen. Zudem können Sie die Elemente exportieren, dies geschieht ebenfalls vollständig auf Ihrem Endgerät.
+
 ## Ihre Rechte
 
 Sie haben folgende Rechte:

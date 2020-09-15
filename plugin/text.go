@@ -35,7 +35,8 @@ func init() {
 const textConfig = `
 <h1>%s</h1>
 <textarea class="fullwidth" id="text_textarea" rows="4"></textarea>
-<p><button onclick="sendActivate('TextDisplay', document.getElementById('text_textarea').value)">%s</button></p>`
+<p><button onclick="sendActivate('TextDisplay', document.getElementById('text_textarea').value)">%s</button></p>
+<p><button onclick="saveElement('TextDisplay', document.getElementById('text_textarea').value, '%s: '+document.getElementById('text_textarea').value.substring(0,80)+(document.getElementById('text_textarea').value.length>80?'[...]':''))">%s</button></p>`
 
 type text struct {
 	adminHTML  chan<- template.HTML
@@ -49,7 +50,7 @@ type text struct {
 
 func (t *text) ConfigHTML() template.HTML {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(textConfig, template.HTMLEscapeString(tl.DisplayText), template.HTMLEscapeString(tl.Activate)))
+	return template.HTML(fmt.Sprintf(textConfig, template.HTMLEscapeString(tl.DisplayText), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayText), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (t *text) AdminHTMLChannel(c chan<- template.HTML) {

@@ -39,6 +39,7 @@ const freetextConfig = `
 <h1>%s</h1>
 <p>%s: <input id="FreeText" type="text"></p>
 <p><button onclick="sendActivate('FreeText', document.getElementById('FreeText').value)">%s</button></p>
+<p><button onclick="saveElement('FreeText', document.getElementById('FreeText').value, '%s: '+document.getElementById('FreeText').value)">%s</button></p>
 `
 
 const freetextUser = `
@@ -88,7 +89,7 @@ type freetext struct {
 
 func (f *freetext) ConfigHTML() template.HTML {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(freetextConfig, template.HTMLEscapeString(tl.DisplayFreeText), template.HTMLEscapeString(tl.FreeTextQuestion), template.HTMLEscapeString(tl.Activate)))
+	return template.HTML(fmt.Sprintf(freetextConfig, template.HTMLEscapeString(tl.DisplayFreeText), template.HTMLEscapeString(tl.FreeTextQuestion), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayFreeText), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (f *freetext) AdminHTMLChannel(c chan<- template.HTML) {

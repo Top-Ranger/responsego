@@ -16,7 +16,14 @@
     "Submit": "Submit",
     "Finish": "Finish",
     "DisplayBlank": "Blank",
-    "DisplayFreeText":  "Free Text",
+    "DisplayFreeText": "Free Text",
     "FreeTextQuestion": "Question for free text",
-    "UpdateAll5Seconds": "Results get updated all 5 seconds."
+    "UpdateAll5Seconds": "Results get updated all 5 seconds.",
+    "TabActiveContent": "Active Content",
+    "TabElements": "Elements",
+    "TabSavedElements": "Saved elements",
+    "SaveElement": "Save element",
+    "DownloadButton": "Download",
+    "ClearElements": "Clear elements",
+    "ReplaceElements": "Replace elements"
 }

@@ -54,11 +54,17 @@
         </table>
     </div>
 
-    <div id="_active" class="even contentbox online" style="height: 30%">
+    <div id="tabs" style="height: 5%; overflow: auto;" class="online">
+      <button class="tabbutton" onclick="openTab('active')" data-tabname="active">{{.Translation.TabActiveContent}}</button>
+      <button class="tabbutton" onclick="openTab('elements')" data-tabname="elements">{{.Translation.TabElements}}</button>
+      <button class="tabbutton" onclick="openTab('saved')" data-tabname="saved">{{.Translation.TabSavedElements}}</button>
+    </div>
+
+    <div id="_active" class="even contentbox tab" data-tabname="active" style="height: 65%">
         <!---Current page-->
     </div>
 
-    <div class="odd contentbox online" style="height: 40%">
+    <div class="even contentbox tab" data-tabname="elements" style="height: 65%">
         <!---Elements-->
         {{range $i, $e := .Elements}}
         {{if ne $i 0}}
@@ -69,9 +75,40 @@
         </div>
         {{end}}
     </div>
+ 
+    <div class="even contentbox tab" data-tabname="saved" style="height: 65%">
+      <!---Saved elements-->
+      <h1>{{.Translation.TabSavedElements}}</h1>
+      <ul id="list_saved_elements">
+      </ul>
+      <p><button onclick="downloadSaved();">{{.Translation.DownloadButton}}</button></p>
+      <p><button onclick="clearSaved();">{{.Translation.ClearElements}}</button></p>
+      <p><input type="file" id="replaceSaved"/> <button id="replaceSavedButton" disabled>{{.Translation.ReplaceElements}}</button></p>
+    </div>
   </div>
 
   <script>
+    function openTab(tab) {
+      var e = document.getElementsByClassName("tab");
+      for(var i = 0; i < e.length; i++) {
+        if(e[i].dataset.tabname == tab) {
+          e[i].classList.remove('hidden');
+        } else {
+          e[i].classList.add('hidden');
+        }
+      }
+      e = document.getElementsByClassName("tabbutton");
+      for(var i = 0; i < e.length; i++) {
+        if(e[i].dataset.tabname == tab) {
+          e[i].classList.add('tabbuttonactive');
+        } else {
+          e[i].classList.remove('tabbuttonactive');
+        }
+      }
+    }
+
+    openTab("elements");
+
     function setOffline(b) {
       if (b) {
         var h = document.getElementsByClassName("online")
@@ -82,6 +119,7 @@
         for(var i = 0; i < h.length; i++) {
           h[i].classList.remove('hidden');
         }
+        openTab("__offline")
       } else {
         var h = document.getElementsByClassName("offline")
         for(var i = 0; i < h.length; i++) {
@@ -91,10 +129,49 @@
         for(var i = 0; i < h.length; i++) {
           h[i].classList.remove('hidden');
         }
+        openTab("elements")
       }
     }
 
     setOffline(true);
+
+    var lsName = "responsego_path_"+window.location.pathname
+
+    function loadSaved(data) {
+      var list = document.createElement("ul");
+      list.id = "list_saved_elements";
+
+      try {
+        save = JSON.parse(data);
+        if(save == null) {
+          save = [];
+        } else if(!Array.isArray(save)) {
+          throw "not an array";
+        }
+      } catch(e) {
+        alert(e);
+        return
+      }
+
+      for(var i = 0; i < save.length; i++) {
+        var a = document.createElement("A");
+        a.textContent = save[i].Description;
+        var f = save[i].From;
+        var d = save[i].Data;
+        a.onclick = function() {
+          sendActivate(f, d);
+        }
+        a.dataset.From = save[i].From;
+        a.dataset.Data = save[i].Data;
+        a.dataset.Description = save[i].Description;
+        var li = document.createElement("LI");
+        li.appendChild(a);
+        list.appendChild(li);
+      }
+
+      document.getElementById('list_saved_elements').replaceWith(list);
+    }
+    loadSaved(localStorage.getItem(lsName))
 
     var ws;
 
@@ -173,10 +250,105 @@
       var s = JSON.stringify({"From": from, "Action": "activate", "Data": data});
       try{
         ws.send(s);
+        openTab("active")
       } catch (e) {
         console.log(e);
         ws.close(4000, e.toString().substring(0, 40));
       }
+    }
+
+    function saveElement(from, data, description) {
+      var list = document.getElementById("list_saved_elements");
+      var a = document.createElement("A");
+      a.textContent = description;
+      a.onclick = function() {
+        sendActivate(from, data);
+      }
+      a.dataset.From = from;
+      a.dataset.Data = data;
+      a.dataset.Description = description;
+      var li = document.createElement("LI");
+      li.appendChild(a);
+      list.appendChild(li);
+
+      var save = [];
+      try {
+        save = JSON.parse(localStorage.getItem(lsName));
+        if(save == null) {
+          save = [];
+        } else if(!Array.isArray(save)) {
+          throw "not an array";
+        }
+      } catch(e) {
+        console.log(e);
+        save = [];
+      }
+      save.push({"From": from, "Data": data, "Description": description});
+      try {
+        localStorage.setItem(lsName, JSON.stringify(save));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    function clearSaved() {
+      localStorage.removeItem(lsName);
+      var list = document.createElement("ul");
+      list.id = "list_saved_elements";
+      document.getElementById('list_saved_elements').replaceWith(list);
+    }
+
+    function downloadSaved() {
+      try {
+        save = JSON.parse(localStorage.getItem(lsName));
+        if(save == null) {
+          save = [];
+        } else if(!Array.isArray(save)) {
+          throw "not an array";
+        }
+      } catch(e) {
+        console.log(e);
+        save = [];
+      }
+      var downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(new Blob([JSON.stringify(save)], {type: ' text/plain'}));
+      downloadLink.download = window.location.pathname.split("/").slice(-1)[0] + ".rgos";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+
+    document.getElementById("replaceSavedButton").addEventListener("click", function(){
+      if(document.getElementById("replaceSaved").files.length === 0) {
+        return;
+      }
+      var file = document.getElementById("replaceSaved").files[0];
+      var reader = new FileReader();
+      reader.addEventListener('load', function(e) {
+  	    loadSaved(e.target.result)
+       });
+       reader.addEventListener('error', function() {
+         alert('Error');
+       });
+       reader.readAsText(file);
+       document.getElementById("replaceSaved").value = "";
+       var changeevent = new Event('change');
+       document.getElementById("replaceSaved").dispatchEvent(changeevent);
+    });
+
+    document.getElementById("replaceSaved").addEventListener("change", function(e)
+    {
+      if(document.getElementById("replaceSaved").files.length === 0) {
+        document.getElementById("replaceSavedButton").disabled = true;
+      } else {
+        document.getElementById("replaceSavedButton").removeAttribute("disabled");
+      }
+    });
+
+    // Initial value
+    {
+      let changeevent = new Event('change');
+      document.getElementById("replaceSaved").dispatchEvent(changeevent);
     }
 
     function sendData(from, data) {

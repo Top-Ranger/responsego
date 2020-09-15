@@ -18,5 +18,12 @@
     "DisplayBlank": "Leere",
     "DisplayFreeText": "Freitext",
     "FreeTextQuestion": "Frage für Freitext",
-    "UpdateAll5Seconds": "Ergebnisse werden alle 5 Sekunden aktualisiert."
+    "UpdateAll5Seconds": "Ergebnisse werden alle 5 Sekunden aktualisiert.",
+    "TabActiveContent": "Aktiver Inhalt",
+    "TabElements": "Elemente",
+    "TabSavedElements": "Gespeicherte Elemente",
+    "SaveElement": "Element speichern",
+    "DownloadButton": "Herunterladen",
+    "ClearElements": "Alle Elemente löschen",
+    "ReplaceElements": "Alle Elemente ersetzen"
 }

@@ -33,7 +33,8 @@ func init() {
 
 const blankConfig = `
 <h1>%s</h1>
-<p><button onclick="sendActivate('Blank', '')">%s</button></p>`
+<p><button onclick="sendActivate('Blank', '')">%s</button></p>
+<p><button onclick="saveElement('Blank', '', '%s')">%s</button></p>`
 
 type blank struct {
 	adminHTML  chan<- template.HTML
@@ -46,7 +47,7 @@ type blank struct {
 
 func (b *blank) ConfigHTML() template.HTML {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(blankConfig, template.HTMLEscapeString(tl.DisplayBlank), template.HTMLEscapeString(tl.Activate)))
+	return template.HTML(fmt.Sprintf(blankConfig, template.HTMLEscapeString(tl.DisplayBlank), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayBlank), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (b *blank) AdminHTMLChannel(c chan<- template.HTML) {

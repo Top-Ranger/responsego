@@ -49,6 +49,13 @@ type Translation struct {
 	DisplayFreeText   string
 	FreeTextQuestion  string
 	UpdateAll5Seconds string
+	TabActiveContent  string
+	TabElements       string
+	TabSavedElements  string
+	SaveElement       string
+	DownloadButton    string
+	ClearElements     string
+	ReplaceElements   string
 }
 
 const defaultLanguage = "en"
