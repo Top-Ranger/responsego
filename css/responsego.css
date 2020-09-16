@@ -186,3 +186,22 @@ pre {
 .tabbuttonactive:hover {
     background-color: var(--primary-colour-dark);   
 }
+
+.message {
+    background-color: var(--contra-light);
+    width: calc(100% - 24px);
+    height: 20%;
+    position: absolute;
+    top: 8px;
+    transition: 0.5s;
+    z-index: 1;
+    padding-left: 8px;
+    align-items: center;
+    display: flex;
+    text-align: left;
+}
+
+.invisible {
+    z-index: -1;
+    opacity: 0.0;
+}

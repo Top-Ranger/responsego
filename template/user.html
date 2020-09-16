@@ -22,6 +22,10 @@
     </div>
   </header>
 
+  <div id="sentMessage" class="invisible message">
+    <h1>{{.Translation.ResponseSent}}</h1>
+  </div>
+
   <div class="mainbox">
     <div class="offline">
       <h1>{{.Translation.NoConnection}}</h1>
@@ -115,6 +119,7 @@
       var s = JSON.stringify({"From": from, "Action": "user", "Data": data})
       try{
         ws.send(s);
+        showSentMessage();
       } catch (e) {
         console.log(e)
         ws.close(4000, e.toString().substring(0, 40));
@@ -125,10 +130,17 @@
       var s = JSON.stringify({"From": "_global", "Action": "icon", "Data": icon})
       try{
         ws.send(s);
+        showSentMessage();
       } catch (e) {
         console.log(e)
         ws.close(4000, e.toString().substring(0, 40));
       }
+    }
+
+    function showSentMessage() {
+      let e = document.getElementById("sentMessage");
+      e.classList.remove("invisible");
+      setTimeout(function(){ e.classList.add("invisible"); }, 1000);
     }
   </script>
 

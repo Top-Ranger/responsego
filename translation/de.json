@@ -25,5 +25,6 @@
     "SaveElement": "Element speichern",
     "DownloadButton": "Herunterladen",
     "ClearElements": "Alle Elemente löschen",
-    "ReplaceElements": "Alle Elemente ersetzen"
+    "ReplaceElements": "Alle Elemente ersetzen",
+    "ResponseSent": "Rückmeldung gesendet"
 }

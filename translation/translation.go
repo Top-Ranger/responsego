@@ -56,6 +56,7 @@ type Translation struct {
 	DownloadButton    string
 	ClearElements     string
 	ReplaceElements   string
+	ResponseSent      string
 }
 
 const defaultLanguage = "en"
