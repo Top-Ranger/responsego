@@ -202,6 +202,6 @@ pre {
 }
 
 .invisible {
-    z-index: -1;
-    opacity: 0.0;
+    height: 0px;
+    font-size: 0px;
 }
