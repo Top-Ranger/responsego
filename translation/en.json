@@ -26,5 +26,8 @@
     "DownloadButton": "Download",
     "ClearElements": "Clear elements",
     "ReplaceElements": "Replace elements",
-    "ResponseSent": "Response sent"
+    "ResponseSent": "Response sent",
+    "Username": "Username",
+    "Password": "Password",
+    "Authenticate": "Authenticate"
 }

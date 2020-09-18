@@ -48,6 +48,13 @@ var responseCacheLock = sync.Mutex{}
 var upgrader = websocket.Upgrader{}
 
 var textTemplate *template.Template
+var authenticateTemplate *template.Template
+
+type authenticateTemplateStruct struct {
+	Key         string
+	Translation translation.Translation
+	ServerPath  string
+}
 
 var dsgvo []byte
 var impressum []byte
@@ -67,6 +74,16 @@ func init() {
 	}
 
 	textTemplate, err = template.New("text").Parse(string(b))
+	if err != nil {
+		panic(err)
+	}
+
+	b, err = ioutil.ReadFile("template/authenticate.html")
+	if err != nil {
+		panic(err)
+	}
+
+	authenticateTemplate, err = template.New("authenticate").Parse(string(b))
 	if err != nil {
 		panic(err)
 	}
@@ -264,6 +281,56 @@ func rootHandle(rw http.ResponseWriter, r *http.Request) {
 
 	response, ok := responseCache[key]
 	if !ok {
+		if config.NeedAuthenticationForNew {
+			switch r.Method {
+			case http.MethodGet:
+				// Send authentification request
+				td := authenticateTemplateStruct{Key: key, Translation: translation.GetDefaultTranslation(), ServerPath: config.ServerPath}
+				authenticateTemplate.Execute(rw, td)
+				return
+			case http.MethodPost:
+				// Verify authentification request
+				err := r.ParseForm()
+				if err != nil {
+					rw.WriteHeader(http.StatusInternalServerError)
+					t := textTemplateStruct{template.HTML(template.HTMLEscapeString(err.Error())), translation.GetDefaultTranslation(), config.ServerPath}
+					textTemplate.Execute(rw, t)
+					return
+				}
+
+				username, password := r.Form.Get("name"), r.Form.Get("password")
+
+				if len(username) == 0 || len(password) == 0 {
+					rw.WriteHeader(http.StatusForbidden)
+					t := textTemplateStruct{"403 Forbidden", translation.GetDefaultTranslation(), config.ServerPath}
+					textTemplate.Execute(rw, t)
+					return
+				}
+				correct, err := authenticater.Authenticate(username, password)
+				if err != nil {
+					rw.WriteHeader(http.StatusInternalServerError)
+					t := textTemplateStruct{template.HTML(template.HTMLEscapeString(err.Error())), translation.GetDefaultTranslation(), config.ServerPath}
+					textTemplate.Execute(rw, t)
+					return
+				}
+				if !correct {
+					if config.LogFailedLogin {
+						log.Printf("Failed authentication from %s", GetRealIP(r))
+					}
+					rw.WriteHeader(http.StatusForbidden)
+					t := textTemplateStruct{"403 Forbidden", translation.GetDefaultTranslation(), config.ServerPath}
+					textTemplate.Execute(rw, t)
+					return
+				}
+				// All ok - continue creation
+
+			default:
+				rw.WriteHeader(http.StatusBadRequest)
+				t := textTemplateStruct{"400 Bad Request", translation.GetDefaultTranslation(), config.ServerPath}
+				textTemplate.Execute(rw, t)
+				return
+			}
+		}
 		b := make([]byte, 35)
 		_, err := rand.Read(b)
 		if err != nil {

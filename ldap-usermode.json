@@ -1,0 +1,10 @@
+{
+    "Endpoint": "ldaps://ldap.example.com:389",
+    "UseStartTLS": false,
+    "BindUserPattern": "%s@example.com",
+    "TimeLimit": 5,
+    "RateLimit": 10,
+    "BaseDN": "dc=example,dc=com",
+    "LDAPUserFilter": "(&(objectClass=organizationalPerson)(uid=%s))",
+    "InsecureSkipCertificateVerify": false
+}

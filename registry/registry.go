@@ -44,9 +44,19 @@ type FeedbackPlugin interface {
 	GetLastHTMLAdmin() template.HTML
 }
 
+// Authenticater allows to validate a username/password combination.
+// It can safely be assumed that LoadConfig will only be called once before Authenticate will be called.
+// Authenticate must be safely callable in parallel.
+type Authenticater interface {
+	LoadConfig(b []byte) error
+	Authenticate(user, password string) (bool, error)
+}
+
 var (
 	knownFeedbackPlugins      = make(map[string]func() FeedbackPlugin)
 	knownFeedbackPluginsMutex = sync.RWMutex{}
+	knownAuthenticater        = make(map[string]Authenticater)
+	knownAuthenticaterMutex   = sync.RWMutex{}
 )
 
 // RegisterFeedbackPlugin registeres a data safe.
@@ -86,4 +96,28 @@ func GetNamesOfFeedbackPlugins() []string {
 
 	sort.StringSlice(s).Sort()
 	return s
+}
+
+// RegisterAuthenticater registeres an authenticater.
+// The name of the authenticater is used as an identifier and must be unique.
+// You can savely use it in parallel.
+func RegisterAuthenticater(a Authenticater, name string) error {
+	knownAuthenticaterMutex.Lock()
+	defer knownAuthenticaterMutex.Unlock()
+
+	_, ok := knownAuthenticater[name]
+	if ok {
+		return AlreadyRegisteredError("Authenticater already registered")
+	}
+	knownAuthenticater[name] = a
+	return nil
+}
+
+// GetAuthenticater returns a authenticater.
+// The bool indicates whether it existed. You can only use it if the bool is true.
+func GetAuthenticater(name string) (Authenticater, bool) {
+	knownAuthenticaterMutex.RLock()
+	defer knownAuthenticaterMutex.RUnlock()
+	a, ok := knownAuthenticater[name]
+	return a, ok
 }

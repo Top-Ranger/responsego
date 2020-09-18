@@ -26,5 +26,8 @@
     "DownloadButton": "Herunterladen",
     "ClearElements": "Alle Elemente löschen",
     "ReplaceElements": "Alle Elemente ersetzen",
-    "ResponseSent": "Rückmeldung gesendet"
+    "ResponseSent": "Rückmeldung gesendet",
+    "Username": "Benutzername",
+    "Password": "Passwort",
+    "Authenticate": "Authentifizieren"
 }

@@ -57,6 +57,9 @@ type Translation struct {
 	ClearElements     string
 	ReplaceElements   string
 	ResponseSent      string
+	Username          string
+	Password          string
+	Authenticate      string
 }
 
 const defaultLanguage = "en"
