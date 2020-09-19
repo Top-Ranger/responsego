@@ -344,7 +344,7 @@ func rootHandle(rw http.ResponseWriter, r *http.Request) {
 		response = NewResponse(key, password)
 		responseCache[key] = response
 
-		http.Redirect(rw, r, fmt.Sprintf("%s?admin=%s", key, password), http.StatusFound)
+		http.Redirect(rw, r, fmt.Sprintf("/%s?admin=%s", key, password), http.StatusFound)
 		return
 	}
 
