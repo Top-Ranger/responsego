@@ -50,12 +50,6 @@ var upgrader = websocket.Upgrader{}
 var textTemplate *template.Template
 var authenticateTemplate *template.Template
 
-type authenticateTemplateStruct struct {
-	Key         string
-	Translation translation.Translation
-	ServerPath  string
-}
-
 var dsgvo []byte
 var impressum []byte
 
@@ -91,6 +85,12 @@ func init() {
 
 type textTemplateStruct struct {
 	Text        template.HTML
+	Translation translation.Translation
+	ServerPath  string
+}
+
+type authenticateTemplateStruct struct {
+	Key         string
 	Translation translation.Translation
 	ServerPath  string
 }
