@@ -15,6 +15,9 @@ To run it, simply use the following commands:
 go build
 ./responsego
 
+To build the LDAP authenticater, you have to use the following build command:
+go build -tags="ldap"
+
 A sample configration can be found at 'config.json'.
 To create a response link, simply browse to the future location of the response page.
 No seperate creation is needed.

@@ -75,7 +75,7 @@ func loadConfig(path string) (ConfigStruct, error) {
 }
 
 func main() {
-	configPath := flag.String("config", "./config.json", "Path to json config for PollGo!")
+	configPath := flag.String("config", "./config.json", "Path to json config for ResponseGo!")
 	flag.Parse()
 
 	c, err := loadConfig(*configPath)
