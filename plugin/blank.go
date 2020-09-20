@@ -45,9 +45,9 @@ type blank struct {
 	cancel     context.CancelFunc
 }
 
-func (b *blank) ConfigHTML() template.HTML {
+func (b *blank) ConfigHTML() (string, template.HTML) {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(blankConfig, template.HTMLEscapeString(tl.DisplayBlank), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayBlank), template.HTMLEscapeString(tl.SaveElement)))
+	return tl.DisplayBlank, template.HTML(fmt.Sprintf(blankConfig, template.HTMLEscapeString(tl.DisplayBlank), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayBlank), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (b *blank) AdminHTMLChannel(c chan<- template.HTML) {

@@ -122,9 +122,9 @@ type question struct {
 	Finished        bool
 }
 
-func (q *question) ConfigHTML() template.HTML {
+func (q *question) ConfigHTML() (string, template.HTML) {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(questionConfig, template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.SaveElement)))
+	return tl.DisplayQuestion, template.HTML(fmt.Sprintf(questionConfig, template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayQuestion), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (q *question) AdminHTMLChannel(c chan<- template.HTML) {

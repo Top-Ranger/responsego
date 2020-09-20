@@ -33,7 +33,7 @@ func (a AlreadyRegisteredError) Error() string {
 
 // FeedbackPlugin represents an element for giving feedback
 type FeedbackPlugin interface {
-	ConfigHTML() template.HTML
+	ConfigHTML() (string, template.HTML) // Name, HTML
 	AdminHTMLChannel(chan<- template.HTML)
 	UserHTMLChannel(chan<- template.HTML)
 	ReceiveUserChannel(<-chan []byte)

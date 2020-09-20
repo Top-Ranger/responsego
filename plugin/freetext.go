@@ -87,9 +87,9 @@ type freetext struct {
 	AnswerLock    sync.Mutex
 }
 
-func (f *freetext) ConfigHTML() template.HTML {
+func (f *freetext) ConfigHTML() (string, template.HTML) {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(freetextConfig, template.HTMLEscapeString(tl.DisplayFreeText), template.HTMLEscapeString(tl.FreeTextQuestion), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayFreeText), template.HTMLEscapeString(tl.SaveElement)))
+	return tl.DisplayFreeText, template.HTML(fmt.Sprintf(freetextConfig, template.HTMLEscapeString(tl.DisplayFreeText), template.HTMLEscapeString(tl.FreeTextQuestion), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayFreeText), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (f *freetext) AdminHTMLChannel(c chan<- template.HTML) {

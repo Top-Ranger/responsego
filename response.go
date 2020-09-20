@@ -24,6 +24,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -80,7 +81,10 @@ const (
 var userTemplate *template.Template
 var adminTemplate *template.Template
 
-var pluginConfigCache = make([]template.HTML, 0)
+var pluginConfigCache = make([]struct {
+	Name string
+	HTML template.HTML
+}, 0)
 var pluginConfigCacheOnce = sync.Once{}
 
 type message struct {
@@ -121,10 +125,13 @@ type userTemplateStruct struct {
 }
 
 type adminTemplateStruct struct {
-	URL         string
-	QR          template.URL
-	Password    string
-	Elements    []template.HTML
+	URL      string
+	QR       template.URL
+	Password string
+	Elements []struct {
+		Name string
+		HTML template.HTML
+	}
 	Translation translation.Translation
 	ServerPath  string
 }
@@ -491,7 +498,15 @@ func fetchConfigCache() {
 				log.Printf("fetch config cache: Plugin %s should exist, but doesn't", plugins[i])
 			}
 			p := fp()
-			pluginConfigCache = append(pluginConfigCache, p.ConfigHTML())
+			n, h := p.ConfigHTML()
+			if strings.HasPrefix(n, "_") {
+				log.Printf("fetchConfigCache: Element name %s starts with '_' which is not allowed. Skipping it")
+				continue
+			}
+			pluginConfigCache = append(pluginConfigCache, struct {
+				Name string
+				HTML template.HTML
+			}{Name: n, HTML: h})
 		}
 	})
 }

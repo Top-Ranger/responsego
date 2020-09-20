@@ -48,9 +48,9 @@ type text struct {
 	html       template.HTML
 }
 
-func (t *text) ConfigHTML() template.HTML {
+func (t *text) ConfigHTML() (string, template.HTML) {
 	tl := translation.GetDefaultTranslation()
-	return template.HTML(fmt.Sprintf(textConfig, template.HTMLEscapeString(tl.DisplayText), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayText), template.HTMLEscapeString(tl.SaveElement)))
+	return tl.DisplayText, template.HTML(fmt.Sprintf(textConfig, template.HTMLEscapeString(tl.DisplayText), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayText), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (t *text) AdminHTMLChannel(c chan<- template.HTML) {

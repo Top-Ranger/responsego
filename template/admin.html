@@ -55,28 +55,18 @@
     </div>
 
     <div id="tabs" style="height: 5%; overflow: auto;" class="online">
-      <button class="tabbutton" onclick="openTab('active')" data-tabname="active">{{.Translation.TabActiveContent}}</button>
-      <button class="tabbutton" onclick="openTab('elements')" data-tabname="elements">{{.Translation.TabElements}}</button>
-      <button class="tabbutton" onclick="openTab('saved')" data-tabname="saved">{{.Translation.TabSavedElements}}</button>
+      <button class="tabbutton" onclick="openTab('_active')" data-tabname="_active"><strong>{{.Translation.TabActiveContent}}</strong></button>
+      <button class="tabbutton" onclick="openTab('_saved')" data-tabname="_saved"><strong>{{.Translation.TabSavedElements}}</strong></button>
+      {{range $i, $e := .Elements}}
+      <button class="tabbutton" onclick="openTab('{{$e.Name}}')" data-tabname="{{$e.Name}}">{{$e.Name}}</button>
+      {{end}}
     </div>
 
-    <div id="_active" class="even contentbox tab" data-tabname="active" style="height: 65%">
+    <div id="_active" class="even contentbox tab" data-tabname="_active" style="height: 65%">
         <!---Current page-->
     </div>
 
-    <div class="even contentbox tab" data-tabname="elements" style="height: 65%">
-        <!---Elements-->
-        {{range $i, $e := .Elements}}
-        {{if ne $i 0}}
-        <hr>
-        {{end}}
-        <div>
-          {{$e}}
-        </div>
-        {{end}}
-    </div>
- 
-    <div class="even contentbox tab" data-tabname="saved" style="height: 65%">
+    <div class="even contentbox tab" data-tabname="_saved" style="height: 65%">
       <!---Saved elements-->
       <h1>{{.Translation.TabSavedElements}}</h1>
       <ul id="list_saved_elements">
@@ -85,6 +75,13 @@
       <p><button onclick="clearSaved();">{{.Translation.ClearElements}}</button></p>
       <p><input type="file" id="replaceSaved"/> <button id="replaceSavedButton" disabled>{{.Translation.ReplaceElements}}</button></p>
     </div>
+
+    <!---Elements-->
+    {{range $i, $e := .Elements}}
+    <div class="even contentbox tab" data-tabname="{{$e.Name}}" style="height: 65%">
+      {{$e.HTML}}
+    </div>
+    {{end}}
   </div>
 
   <script>
@@ -107,7 +104,7 @@
       }
     }
 
-    openTab("elements");
+    openTab("_saved");
 
     function setOffline(b) {
       if (b) {
@@ -129,7 +126,7 @@
         for(var i = 0; i < h.length; i++) {
           h[i].classList.remove('hidden');
         }
-        openTab("elements")
+        openTab("_saved")
       }
     }
 
