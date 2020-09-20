@@ -314,7 +314,7 @@ func rootHandle(rw http.ResponseWriter, r *http.Request) {
 					return
 				}
 				if !correct {
-					if config.LogFailedLogin {
+					if config.LogLogin {
 						log.Printf("Failed authentication from %s", GetRealIP(r))
 					}
 					rw.WriteHeader(http.StatusForbidden)
@@ -323,6 +323,9 @@ func rootHandle(rw http.ResponseWriter, r *http.Request) {
 					return
 				}
 				// All ok - continue creation
+				if config.LogLogin {
+					log.Printf("Creating new response for '%s': %s", username, key)
+				}
 
 			default:
 				rw.WriteHeader(http.StatusBadRequest)
@@ -352,7 +355,7 @@ func rootHandle(rw http.ResponseWriter, r *http.Request) {
 	if pw != "" {
 		// Admin connection
 		if pw != response.Password {
-			if config.LogFailedLogin {
+			if config.LogLogin {
 				log.Printf("Failed authentication from %s (%s)", GetRealIP(r), key)
 			}
 			rw.WriteHeader(http.StatusForbidden)

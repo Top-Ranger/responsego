@@ -42,7 +42,7 @@ type ConfigStruct struct {
 	PathDSGVO                string
 	ServerPath               string
 	ServerName               string
-	LogFailedLogin           bool
+	LogLogin                 bool
 	NeedAuthenticationForNew bool
 	Authenticater            string
 	AuthenticaterConfig      string

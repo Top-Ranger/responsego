@@ -6,7 +6,7 @@
    "PathDSGVO": "DSGVO.md",
    "ServerPath": "/responsego",
    "ServerName": "localhost:22122",
-   "LogFailedLogin": true,
+   "LogLogin": true,
    "NeedAuthenticationForNew": true,
    "Authenticater": "PlainFile",
    "AuthenticaterConfig": "./plainFile.json"
