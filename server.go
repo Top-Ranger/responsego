@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/rand"
+	"crypto/subtle"
 	"encoding/base32"
 	"fmt"
 	"html/template"
@@ -354,7 +355,7 @@ func rootHandle(rw http.ResponseWriter, r *http.Request) {
 	pw, ws := r.URL.Query().Get("admin"), r.URL.Query().Get("ws")
 	if pw != "" {
 		// Admin connection
-		if pw != response.Password {
+		if subtle.ConstantTimeCompare([]byte(pw), []byte(response.Password)) == 0 {
 			if config.LogLogin {
 				log.Printf("Failed authentication from %s (%s)", GetRealIP(r), key)
 			}
