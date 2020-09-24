@@ -16,6 +16,9 @@ html {
     font-family: 'Oxygen', sans-serif;
     line-height: 1.3;
     hyphens: auto;
+}
+
+.html-fullscreen {
     height: 100%;
 }
 
