@@ -136,7 +136,8 @@ type adminTemplateStruct struct {
 	ServerPath  string
 }
 
-func websocketReader(target chan<- []byte, ws *websocket.Conn, r *response) {
+func websocketReader(stopWriter context.CancelFunc, target chan<- []byte, ws *websocket.Conn, r *response, id int) {
+	defer stopWriter()
 	for {
 		_, b, err := ws.ReadMessage()
 		if err != nil {
@@ -154,15 +155,20 @@ func websocketReader(target chan<- []byte, ws *websocket.Conn, r *response) {
 	}
 }
 
-func websocketWriter(from <-chan []byte, ws *websocket.Conn, r *response, id int) {
+func websocketWriter(stopWriter context.Context, from <-chan []byte, ws *websocket.Conn, r *response, id int) {
 	defer ws.Close()
-	for b := range from {
-		err := ws.WriteMessage(websocket.TextMessage, b)
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
-				log.Printf("socket error (%s): %s", r.Path, err)
+	defer r.removeWS(id)
+	for {
+		select {
+		case b := <-from:
+			err := ws.WriteMessage(websocket.TextMessage, b)
+			if err != nil {
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
+					log.Printf("socket error (%s): %s", r.Path, err)
+				}
+				return
 			}
-			r.removeWS(id)
+		case <-stopWriter.Done():
 			return
 		}
 	}
@@ -173,6 +179,7 @@ func (r *response) removeWS(id int) {
 	defer r.l.Unlock()
 	delete(r.admins, id)
 	delete(r.users, id)
+	fmt.Println(id)
 }
 
 // NewResponse creates a new response object (including startup of all required goroutines).
@@ -207,8 +214,9 @@ func (r *response) AddUser(ws *websocket.Conn) {
 
 	w := make(chan []byte, bufferSize)
 	r.users[r.currentID] = w
-	go websocketReader(r.readUser, ws, r)
-	go websocketWriter(w, ws, r, r.currentID)
+	ctx, close := context.WithCancel(context.Background())
+	go websocketReader(close, r.readUser, ws, r, r.currentID)
+	go websocketWriter(ctx, w, ws, r, r.currentID)
 	r.currentID++
 	if r.currentPlugin != nil {
 		m := message{From: r.currentPluginName, Action: actionHTML, Data: string(r.currentPlugin.GetLastHTMLUser())}
@@ -230,8 +238,9 @@ func (r *response) AddAdmin(ws *websocket.Conn) {
 
 	w := make(chan []byte, bufferSize)
 	r.admins[r.currentID] = w
-	go websocketReader(r.readAdmins, ws, r)
-	go websocketWriter(w, ws, r, r.currentID)
+	ctx, close := context.WithCancel(context.Background())
+	go websocketReader(close, r.readAdmins, ws, r, r.currentID)
+	go websocketWriter(ctx, w, ws, r, r.currentID)
 	r.currentID++
 	if r.currentPlugin != nil {
 		m := message{From: r.currentPluginName, Action: actionHTML, Data: string(r.currentPlugin.GetLastHTMLAdmin())}
@@ -500,7 +509,7 @@ func fetchConfigCache() {
 			p := fp()
 			n, h := p.ConfigHTML()
 			if strings.HasPrefix(n, "_") {
-				log.Printf("fetchConfigCache: Element name %s starts with '_' which is not allowed. Skipping it")
+				log.Printf("fetchConfigCache: Element name %s (%s) starts with '_' which is not allowed. Skipping it", n, plugins[i])
 				continue
 			}
 			pluginConfigCache = append(pluginConfigCache, struct {
