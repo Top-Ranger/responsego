@@ -179,7 +179,6 @@ func (r *response) removeWS(id int) {
 	defer r.l.Unlock()
 	delete(r.admins, id)
 	delete(r.users, id)
-	fmt.Println(id)
 }
 
 // NewResponse creates a new response object (including startup of all required goroutines).
