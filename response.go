@@ -168,6 +168,8 @@ func websocketWriter(stopWriter context.Context, from <-chan []byte, ws *websock
 				}
 				return
 			}
+		case <-r.ctx.Done():
+			return
 		case <-stopWriter.Done():
 			return
 		}
@@ -183,10 +185,7 @@ func (r *response) removeWS(id int) {
 
 // NewResponse creates a new response object (including startup of all required goroutines).
 func NewResponse(path, password string) *response {
-	var ctx context.Context
-	var cancel context.CancelFunc
-	ctx = context.Background()
-	ctx, cancel = context.WithCancel(ctx)
+	ctx, cancel := context.WithCancel(context.Background())
 	r := &response{
 		l:        sync.Mutex{},
 		ctx:      ctx,
