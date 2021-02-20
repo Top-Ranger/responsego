@@ -79,6 +79,11 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	cssTemplates, err = template.ParseFS(cachedFiles, "css/*")
+	if err != nil {
+		panic(err)
+	}
 }
 
 type textTemplateStruct struct {
