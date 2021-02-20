@@ -200,9 +200,9 @@ func initialiseServer() error {
 			}
 		}
 
-		f, ok := cachedFiles["static/favicon.ico"]
+		f, err := cachedFiles.ReadFile("static/favicon.ico")
 
-		if !ok {
+		if err != nil {
 			rw.WriteHeader(http.StatusNotFound)
 			return
 		}
