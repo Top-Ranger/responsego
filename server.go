@@ -20,14 +20,14 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/subtle"
+	"embed"
 	"encoding/base32"
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -48,37 +48,34 @@ var responseCache = make(map[string]*response)
 var responseCacheLock = sync.Mutex{}
 var upgrader = websocket.Upgrader{}
 
+//go:embed template
+var templateFiles embed.FS
+
 var textTemplate *template.Template
 var authenticateTemplate *template.Template
 
 var dsgvo []byte
 var impressum []byte
 
-var cachedFiles = make(map[string][]byte)
+//go:embed static font js css
+var cachedFiles embed.FS
 var etagCompare string
+var cssTemplates *template.Template
 
 var robottxt = []byte(`User-agent: *
 Disallow: /`)
 
 func init() {
+	var err error
+
 	upgrader.HandshakeTimeout = 5 * time.Second
 
-	b, err := ioutil.ReadFile("template/text.html")
+	textTemplate, err = template.ParseFS(templateFiles, "template/text.html")
 	if err != nil {
 		panic(err)
 	}
 
-	textTemplate, err = template.New("text").Parse(string(b))
-	if err != nil {
-		panic(err)
-	}
-
-	b, err = ioutil.ReadFile("template/authenticate.html")
-	if err != nil {
-		panic(err)
-	}
-
-	authenticateTemplate, err = template.New("authenticate").Parse(string(b))
+	authenticateTemplate, err = template.ParseFS(templateFiles, "template/authenticate.html")
 	if err != nil {
 		panic(err)
 	}
@@ -132,61 +129,6 @@ func initialiseServer() error {
 		rw.Write(impressum)
 	})
 
-	// static files
-	for _, d := range []string{"static/", "font/", "js/"} {
-		filepath.Walk(d, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				log.Panicln("server: Error wile caching files:", err)
-			}
-
-			if info.Mode().IsRegular() {
-				log.Println("static file handler: Caching file", path)
-
-				b, err := ioutil.ReadFile(path)
-				if err != nil {
-					log.Println("static file handler: Error reading file:", err)
-					return err
-				}
-				cachedFiles[path] = b
-				return nil
-			}
-			return nil
-		})
-	}
-
-	// static files needing ServerPath replaced
-	for _, d := range []string{"css/"} {
-		filepath.Walk(d, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				log.Panicln("server: Error wile caching files:", err)
-			}
-
-			if info.Mode().IsRegular() {
-				log.Println("static file handler: Caching file", path)
-
-				b, err := ioutil.ReadFile(path)
-				if err != nil {
-					log.Println("static file handler: Error reading file:", err)
-					return err
-				}
-				t, err := template.New(path).Parse(string(b))
-				if err != nil {
-					log.Println("static file handler: Error parsing file:", err)
-					return err
-				}
-				buf := bytes.Buffer{}
-				err = t.Execute(&buf, struct{ ServerPath string }{config.ServerPath})
-				if err != nil {
-					log.Println("static file handler: Error executing template:", err)
-					return err
-				}
-				cachedFiles[path] = buf.Bytes()
-				return nil
-			}
-			return nil
-		})
-	}
-
 	etag := fmt.Sprint("\"", strconv.FormatInt(time.Now().Unix(), 10), "\"")
 	etagCompare := strings.TrimSuffix(etag, "\"")
 	etagCompareApache := strings.Join([]string{etagCompare, "-"}, "")       // Dirty hack for apache2, who appends -gzip inside the quotes if the file is compressed, thus preventing If-None-Match matching the ETag
@@ -208,8 +150,21 @@ func initialiseServer() error {
 		path := r.URL.Path
 		path = strings.TrimPrefix(path, config.ServerPath)
 		path = strings.TrimPrefix(path, "/")
-		data, ok := cachedFiles[path]
-		if !ok {
+
+		if strings.HasPrefix(path, "css/") {
+			// special case
+			path = strings.TrimPrefix(path, "css/")
+			rw.Header().Set("Content-Type", "text/css")
+			err := cssTemplates.ExecuteTemplate(rw, path, struct{ ServerPath string }{config.ServerPath})
+			if err != nil {
+				rw.WriteHeader(http.StatusNotFound)
+				log.Println("server:", err)
+			}
+			return
+		}
+
+		data, err := cachedFiles.Open(path)
+		if err != nil {
 			rw.WriteHeader(http.StatusNotFound)
 		} else {
 			rw.Header().Set("ETag", etag)
@@ -217,8 +172,6 @@ func initialiseServer() error {
 			switch {
 			case strings.HasSuffix(path, ".svg"):
 				rw.Header().Set("Content-Type", "image/svg+xml")
-			case strings.HasSuffix(path, ".css"):
-				rw.Header().Set("Content-Type", "text/css")
 			case strings.HasSuffix(path, ".ttf"):
 				rw.Header().Set("Content-Type", "application/x-font-truetype")
 			case strings.HasSuffix(path, ".js"):
@@ -226,7 +179,7 @@ func initialiseServer() error {
 			default:
 				rw.Header().Set("Content-Type", "text/plain")
 			}
-			rw.Write(data)
+			io.Copy(rw, data)
 		}
 	}
 

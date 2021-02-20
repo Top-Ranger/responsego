@@ -20,7 +20,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -34,22 +33,14 @@ import (
 )
 
 func init() {
-	b, err := ioutil.ReadFile("template/user.html")
+	var err error
+
+	userTemplate, err = template.ParseFS(templateFiles, "template/user.html")
 	if err != nil {
 		panic(err)
 	}
 
-	userTemplate, err = template.New("user").Parse(string(b))
-	if err != nil {
-		panic(err)
-	}
-
-	b, err = ioutil.ReadFile("template/admin.html")
-	if err != nil {
-		panic(err)
-	}
-
-	adminTemplate, err = template.New("admin").Parse(string(b))
+	adminTemplate, err = template.ParseFS(templateFiles, "template/admin.html")
 	if err != nil {
 		panic(err)
 	}
