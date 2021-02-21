@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020 Marcus Soll
+// Copyright 2020,2021 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,10 +48,6 @@ var responseCache = make(map[string]*response)
 var responseCacheLock = sync.Mutex{}
 var upgrader = websocket.Upgrader{}
 
-//go:embed template
-var templateFiles embed.FS
-
-var textTemplate *template.Template
 var authenticateTemplate *template.Template
 
 var dsgvo []byte
@@ -70,11 +66,6 @@ func init() {
 
 	upgrader.HandshakeTimeout = 5 * time.Second
 
-	textTemplate, err = template.ParseFS(templateFiles, "template/text.html")
-	if err != nil {
-		panic(err)
-	}
-
 	authenticateTemplate, err = template.ParseFS(templateFiles, "template/authenticate.html")
 	if err != nil {
 		panic(err)
@@ -84,12 +75,6 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-}
-
-type textTemplateStruct struct {
-	Text        template.HTML
-	Translation translation.Translation
-	ServerPath  string
 }
 
 type authenticateTemplateStruct struct {
