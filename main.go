@@ -20,7 +20,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -53,7 +52,7 @@ var authenticater registry.Authenticater
 
 func loadConfig(path string) (ConfigStruct, error) {
 	log.Printf("main: Loading config (%s)", path)
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return ConfigStruct{}, errors.New(fmt.Sprintln("Can not read config.json:", err))
 	}
@@ -95,7 +94,7 @@ func main() {
 		if !ok {
 			log.Panicf("main: Unknown Authenticater '%s'", c.Authenticater)
 		}
-		b, err := ioutil.ReadFile(config.AuthenticaterConfig)
+		b, err := os.ReadFile(config.AuthenticaterConfig)
 		if err != nil {
 			log.Panicf("main: Can not read %s: %s", c.AuthenticaterConfig, err.Error())
 		}

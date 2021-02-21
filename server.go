@@ -25,9 +25,9 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -108,7 +108,7 @@ func initialiseServer() error {
 	rootPath = strings.Join([]string{config.ServerPath, "/"}, "")
 
 	// DSGVO
-	b, err := ioutil.ReadFile(config.PathDSGVO)
+	b, err := os.ReadFile(config.PathDSGVO)
 	if err != nil {
 		return err
 	}
@@ -122,7 +122,7 @@ func initialiseServer() error {
 	})
 
 	// Impressum
-	b, err = ioutil.ReadFile(config.PathImpressum)
+	b, err = os.ReadFile(config.PathImpressum)
 	if err != nil {
 		return err
 	}
