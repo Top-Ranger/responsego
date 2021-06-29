@@ -8,6 +8,6 @@
    "ServerName": "localhost:22122",
    "LogLogin": true,
    "NeedAuthenticationForNew": true,
-   "Authenticater": "PlainFile",
-   "AuthenticaterConfig": "./plainFile.json"
+   "Authenticater": "BcryptFile",
+   "AuthenticaterConfig": "./bcryptFile.json"
 }

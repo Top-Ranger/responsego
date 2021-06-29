@@ -16,34 +16,35 @@
 package authenticater
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
-	"github.com/Top-Ranger/responsego/helper"
 	"github.com/Top-Ranger/responsego/registry"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // PlainFile is a simple Authenticater which takes a file cpontaining a two dimensional JSON Array as a configuration.
 // [
-//     ["user1", "password1"],
-//     ["user2", "password2"]
+//     ["user1", "bcrypthash_password1"],
+//     ["user2", "bcrypthash_password2"]
 // ]
 // A username can only be specified once.
-// All entries must be in plain text
-type PlainFile struct {
-	users map[string]string
+// All entries must be in plain text. The hash must be a base64 encoded password. Can be generated using tools like caddy hash-password (https://caddyserver.com/docs/command-line#caddy-hash-password).
+type BcryptFile struct {
+	users map[string][]byte
 }
 
 func init() {
-	err := registry.RegisterAuthenticater(&PlainFile{}, "PlainFile")
+	err := registry.RegisterAuthenticater(&BcryptFile{}, "BcryptFile")
 	if err != nil {
 		panic(err)
 	}
 }
 
 // LoadConfig loads the configuration. It is assumed that this is only called once before Authenticate is called.
-func (p *PlainFile) LoadConfig(b []byte) error {
-	p.users = make(map[string]string)
+func (bf *BcryptFile) LoadConfig(b []byte) error {
+	bf.users = make(map[string][]byte)
 	data := make([][]string, 0)
 	err := json.Unmarshal(b, &data)
 	if err != nil {
@@ -51,24 +52,29 @@ func (p *PlainFile) LoadConfig(b []byte) error {
 	}
 	for i := range data {
 		if len(data[i]) != 2 {
-			return fmt.Errorf("entry %d has length %d, but must be 2 [username, password]", i, len(data[i]))
+			return fmt.Errorf("entry %d has length %d, but must be 2 [username, bcrypthash_password]", i, len(data[i]))
 		}
-		_, ok := p.users[data[i][0]]
+		_, ok := bf.users[data[i][0]]
 		if ok {
 			return fmt.Errorf("user %s found more than once", data[i][0])
 		}
-		p.users[data[i][0]] = helper.EncodePassword(data[i][1])
+		// try decoding
+		decoded, err := base64.StdEncoding.DecodeString(data[i][1])
+		if err != nil {
+			return fmt.Errorf("user %s hash can not be decoded: %w", data[i][0], err)
+		}
+		bf.users[data[i][0]] = decoded
 	}
 	return nil
 }
 
 // Authenticate validates a user/password configuration. It is safe for parallel usage.
-func (p *PlainFile) Authenticate(user, password string) (bool, error) {
-	pw, ok := p.users[user]
+func (bf *BcryptFile) Authenticate(user, password string) (bool, error) {
+	pw, ok := bf.users[user]
 	if !ok {
 		return false, nil
 	}
-	if pw == helper.EncodePassword(password) {
+	if err := bcrypt.CompareHashAndPassword(pw, []byte(password)); err == nil {
 		return true, nil
 	}
 	return false, nil
