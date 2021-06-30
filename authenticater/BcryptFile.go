@@ -30,7 +30,7 @@ import (
 //     ["user2", "bcrypthash_password2"]
 // ]
 // A username can only be specified once.
-// All entries must be in plain text. The hash must be a base64 encoded password. Can be generated using tools like caddy hash-password (https://caddyserver.com/docs/command-line#caddy-hash-password).
+// All entries must be in plain text. The hash must be a base64 encoded password. Can be generated using tools like bcrypt_password_hash (https://github.com/Top-Ranger/bcrypt_password_hash).
 type BcryptFile struct {
 	users map[string][]byte
 }
