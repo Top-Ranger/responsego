@@ -28,5 +28,6 @@ ResponseGo! is licenced under Apache-2.0.
 Bundeled libraries
 ++++++++++++++++++++++++++++++++++++++++++++
 ResponseGo! is bundeled with the Oxygen font, which is licenced under the SIL Open Font License, Version 1.1.
-ResponseGo! is bundeled with Chart.js v2.9.4 (https://www.chartjs.org), which is licenced under the MIT License.
-ResponseGo! is bundeled with moment.js 2.29.1 (https://momentjs.com/), which is licenced under the MIT License.
+QuestionGo! is bundeled with Chart.js v3.4.1 (https://www.chartjs.org), which is licenced under the MIT License.
+QuestionGo! is bundeled with chartjs-adapter-moment v1.0.0 (https://momentjs.com/), which is licenced under the MIT License.
+ResponseGo! is bundeled with moment.js 2.29.1 (https://github.com/chartjs/chartjs-adapter-moment), which is licenced under the MIT License.

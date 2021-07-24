@@ -155,7 +155,7 @@ pre {
 }
 
 .chart {
-    max-width: 100vmin;
+    max-width: 50vmin;
 }
 
 .clickImage:active {
