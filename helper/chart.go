@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020 Marcus Soll
+// Copyright 2020,2021 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -62,18 +62,18 @@ new Chart(ctx, {
 
 	},
 	options: {
-		responsive: true,
-		title: {
-			display: true,
-			text: {{.Label}}
+		plugins: {
+			title: {
+				display: true,
+				text: {{.Label}}
+			}
 		},
+		responsive: true,
 		{{if .Scales}}
 		scales: {
-			yAxes: [{
-				ticks: {
-					beginAtZero: true
-				}
-			}]
+			y: {
+				beginAtZero: true
+			}
 		},
 		{{end}}
 	}
