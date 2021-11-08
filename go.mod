@@ -9,9 +9,9 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/microcosm-cc/bluemonday v1.0.16
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/yuin/goldmark v1.4.2
+	github.com/yuin/goldmark v1.4.3
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
-	golang.org/x/net v0.0.0-20211020060615-d418f374d309 // indirect
-	golang.org/x/sys v0.0.0-20211023085530-d6a326fbbf70 // indirect
+	golang.org/x/net v0.0.0-20211108170745-6635138e15ea // indirect
+	golang.org/x/sys v0.0.0-20211107104306-e0b2ad06fe42 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 )
