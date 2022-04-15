@@ -3,7 +3,6 @@ module github.com/Top-Ranger/responsego
 go 1.16
 
 require (
-	github.com/Azure/go-ntlmssp v0.0.0-20211209120228-48547f28849e // indirect
 	github.com/go-ldap/ldap/v3 v3.4.3
 	github.com/gorilla/websocket v1.5.0
 	github.com/microcosm-cc/bluemonday v1.0.18
