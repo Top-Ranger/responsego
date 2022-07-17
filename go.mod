@@ -13,7 +13,8 @@ require (
 )
 
 require (
-	github.com/Azure/go-ntlmssp v0.0.0-20220621081337-cb9428e4ac1e // indirect
+	// see https://github.com/go-ldap/ldap/issues/381 before updating this
+	github.com/Azure/go-ntlmssp v0.0.0-20211209120228-48547f28849e // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.4 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
