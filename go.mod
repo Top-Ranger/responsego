@@ -7,8 +7,8 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/microcosm-cc/bluemonday v1.0.19
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/yuin/goldmark v1.4.13
-	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8
+	github.com/yuin/goldmark v1.4.14
+	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9
 )
 
@@ -18,6 +18,6 @@ require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.4 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
-	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
-	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6 // indirect
+	golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b // indirect
+	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 )
