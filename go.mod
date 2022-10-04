@@ -5,11 +5,11 @@ go 1.18
 require (
 	github.com/go-ldap/ldap/v3 v3.4.4
 	github.com/gorilla/websocket v1.5.0
-	github.com/microcosm-cc/bluemonday v1.0.20
+	github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/yuin/goldmark v1.4.14
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
-	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9
+	github.com/yuin/goldmark v1.5.2
+	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
+	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af
 )
 
 require (
@@ -18,6 +18,6 @@ require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.4 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
-	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
-	golang.org/x/sys v0.0.0-20220909162455-aba9fc2a8ff2 // indirect
+	golang.org/x/net v0.0.0-20221002022538-bcab6841153b // indirect
+	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
 )
