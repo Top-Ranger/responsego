@@ -53,6 +53,7 @@ const (
 	actionResetIcons  = "resetIcon"
 	actionIcon        = "icon"
 	actionHTML        = "html"
+	actionData        = "data"
 )
 
 const (
@@ -100,6 +101,8 @@ type response struct {
 	readAdmins        chan []byte
 	adminHTML         chan template.HTML
 	userHTML          chan template.HTML
+	adminData         chan []byte
+	userData          chan []byte
 	adminInput        chan []byte
 	userInput         chan []byte
 
@@ -330,6 +333,8 @@ func (r *response) responseMain() {
 						r.currentPluginName = ""
 						r.adminHTML = nil
 						r.userHTML = nil
+						r.adminData = nil
+						r.userData = nil
 						r.adminInput = nil
 						r.userInput = nil
 					}
@@ -347,11 +352,19 @@ func (r *response) responseMain() {
 					p.UserHTMLChannel(r.userHTML)
 					p.ReceiveAdminChannel(r.adminInput)
 					p.ReceiveUserChannel(r.userInput)
+					if p, ok := p.(registry.DataFeedbackPlugin); ok {
+						r.adminData = make(chan []byte, bufferSize)
+						r.userData = make(chan []byte, bufferSize)
+						p.AdminDataChannel(r.adminData)
+						p.UserDataChannel(r.userData)
+					}
 					err := p.Activate([]byte(m.Data))
 					if err != nil {
 						log.Printf("error activating plugin %s (%s): %s", m.From, r.Path, err.Error())
 						r.adminHTML = nil
 						r.userHTML = nil
+						r.adminData = nil
+						r.userData = nil
 						r.adminInput = nil
 						r.userInput = nil
 						return
@@ -451,6 +464,44 @@ func (r *response) responseMain() {
 					}
 				}
 			}()
+		case t := <-r.adminData:
+			func() {
+				r.l.Lock()
+				defer r.l.Unlock()
+
+				m := message{From: r.currentPluginName, Action: actionData, Data: string(t)}
+				b, err := json.Marshal(&m)
+				if err != nil {
+					log.Printf("admin data (%s) plugin %s: %s", r.Path, r.currentPluginName, err.Error())
+					return
+				}
+
+				for k := range r.admins {
+					select {
+					case r.admins[k] <- b:
+					default:
+					}
+				}
+			}()
+		case t := <-r.userData:
+			func() {
+				r.l.Lock()
+				defer r.l.Unlock()
+
+				m := message{From: r.currentPluginName, Action: actionData, Data: string(t)}
+				b, err := json.Marshal(&m)
+				if err != nil {
+					log.Printf("user data (%s) plugin %s: %s", r.Path, r.currentPluginName, err.Error())
+					return
+				}
+
+				for k := range r.users {
+					select {
+					case r.users[k] <- b:
+					default:
+					}
+				}
+			}()
 		case <-done:
 			// Function to use defer
 			func() {
@@ -463,6 +514,8 @@ func (r *response) responseMain() {
 					r.currentPluginName = ""
 					r.adminHTML = nil
 					r.userHTML = nil
+					r.adminData = nil
+					r.userData = nil
 					r.adminInput = nil
 					r.userInput = nil
 				}

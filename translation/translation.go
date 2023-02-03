@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020 Marcus Soll
+// Copyright 2020,2023 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ type Translation struct {
 	DisplayBlank      string
 	DisplayFreeText   string
 	FreeTextQuestion  string
+	DisplayWordcloud  string
 	UpdateAll5Seconds string
 	TabActiveContent  string
 	TabElements       string

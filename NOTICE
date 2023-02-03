@@ -31,3 +31,4 @@ ResponseGo! is bundeled with the Oxygen font, which is licenced under the SIL Op
 QuestionGo! is bundeled with Chart.js (https://www.chartjs.org), which is licenced under the MIT License.
 QuestionGo! is bundeled with chartjs-adapter-moment (https://momentjs.com/), which is licenced under the MIT License.
 ResponseGo! is bundeled with moment.js (https://github.com/chartjs/chartjs-adapter-moment), which is licenced under the MIT License.
+ResponseGo! is bundeled with chartjs-chart-wordcloud (https://github.com/sgratzl/chartjs-chart-wordcloud), which is licenced under the MIT License.
