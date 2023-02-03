@@ -30,5 +30,6 @@
     "ResponseSent": "Rückmeldung gesendet",
     "Username": "Benutzername",
     "Password": "Passwort",
-    "Authenticate": "Authentifizieren"
+    "Authenticate": "Authentifizieren",
+    "CopyToClipboard": "In Zwischenablage kopieren"
 }

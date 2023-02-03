@@ -30,5 +30,6 @@
     "ResponseSent": "Response sent",
     "Username": "Username",
     "Password": "Password",
-    "Authenticate": "Authenticate"
+    "Authenticate": "Authenticate",
+    "CopyToClipboard": "Copy to clipboard"
 }

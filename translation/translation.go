@@ -58,6 +58,7 @@ type Translation struct {
 	Username          string
 	Password          string
 	Authenticate      string
+	CopyToClipboard   string
 }
 
 const defaultLanguage = "en"

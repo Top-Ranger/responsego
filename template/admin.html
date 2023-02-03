@@ -33,7 +33,7 @@
 
     <div class="even contentbox online" style="height: 10%">
         <!---Metadata-->
-        <p>{{.Translation.ParticipantLink}}: {{.URL}} - <a href="{{.QR}}" target="_blank">QR-Code</a></p>
+        <p>{{.Translation.ParticipantLink}}: {{.URL}} <button onclick="navigator.clipboard.writeText('{{.URL}}')">{{.Translation.CopyToClipboard}}</button> - <a href="{{.QR}}" target="_blank">QR-Code</a></p>
     </div>
 
     <div class="contentbox online" style="height: 20%">
