@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"math"
 	"strings"
 	"sync"
 	"time"
@@ -209,18 +210,22 @@ func (w *wordcloud) wordcloudWorker(ctx context.Context) {
 			word := string(b)
 			word = strings.ToLower(word)
 			word = strings.TrimSpace(word)
-			i, _ := w.wordcloudMap[word]
-			w.wordcloudMap[word] = i + 1
-			w.update++
+			if word != "" {
+				i, _ := w.wordcloudMap[word]
+				w.wordcloudMap[word] = i + 1
+				w.update++
+			}
 			w.l.Unlock()
 		case b := <-w.userInput:
 			w.l.Lock()
 			word := string(b)
 			word = strings.ToLower(word)
 			word = strings.TrimSpace(word)
-			i, _ := w.wordcloudMap[word]
-			w.wordcloudMap[word] = i + 1
-			w.update++
+			if word != "" {
+				i, _ := w.wordcloudMap[word]
+				w.wordcloudMap[word] = i + 1
+				w.update++
+			}
 			w.l.Unlock()
 		case <-ticker.C:
 			w.l.Lock()
@@ -237,12 +242,15 @@ func (w *wordcloud) wordcloudWorker(ctx context.Context) {
 				wu.Labels = append(wu.Labels, k)
 				wu.Data = append(wu.Data, v)
 			}
-			if max == 0 {
-				max = 1
+			if max <= 1 { // Needed due to log(1) = 0
+				max = 2
 			}
-			factor := 36 / float64(max)
+			factor := 36 / math.Log2(float64(max))
 			for i := range wu.Data {
-				wu.Data[i] = int(float64(wu.Data[i]) * factor)
+				if wu.Data[i] <= 1 { // Needed due to log(1) = 0
+					wu.Data[i] = 2
+				}
+				wu.Data[i] = int(math.Log2(float64(wu.Data[i])) * factor)
 				if wu.Data[i] == 0 {
 					wu.Data[i] = 1
 				}
