@@ -34,7 +34,7 @@ var chartTemplate = template.Must(template.New("chartTemplate").Parse(`
 </div>
 <script>
 var ctx = document.getElementById('{{.ID}}').getContext('2d');
-new Chart(ctx, {
+var chartData = {
 	type: {{.Type}},
 	data: {
 		datasets: [{
@@ -77,7 +77,8 @@ new Chart(ctx, {
 		},
 		{{end}}
 	}
-});
+};
+var chart = new Chart(ctx, chartData);
 </script>
 `))
 

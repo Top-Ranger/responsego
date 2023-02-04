@@ -371,6 +371,11 @@
     }
 
     function sendData(from, data) {
+      // for admin, this is the same
+      sendDataSilent(from, data);
+    }
+
+    function sendDataSilent(from, data) {
       var s = JSON.stringify({"From": from, "Action": "admin", "Data": data});
       try{
         ws.send(s);

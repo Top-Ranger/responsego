@@ -26,39 +26,42 @@ import (
 
 // Translation represents an object holding all translations
 type Translation struct {
-	Language          string
-	CreatedBy         string
-	Impressum         string
-	PrivacyPolicy     string
-	ParticipantLink   string
-	Faster            string
-	Break             string
-	Slower            string
-	Question          string
-	Good              string
-	NoConnection      string
-	Activate          string
-	DisplayText       string
-	DisplayQuestion   string
-	Submit            string
-	Finish            string
-	DisplayBlank      string
-	DisplayFreeText   string
-	FreeTextQuestion  string
-	DisplayWordcloud  string
-	UpdateAll5Seconds string
-	TabActiveContent  string
-	TabElements       string
-	TabSavedElements  string
-	SaveElement       string
-	DownloadButton    string
-	ClearElements     string
-	ReplaceElements   string
-	ResponseSent      string
-	Username          string
-	Password          string
-	Authenticate      string
-	CopyToClipboard   string
+	Language           string
+	CreatedBy          string
+	Impressum          string
+	PrivacyPolicy      string
+	ParticipantLink    string
+	Faster             string
+	Break              string
+	Slower             string
+	Question           string
+	Good               string
+	NoConnection       string
+	Activate           string
+	DisplayText        string
+	DisplayQuestion    string
+	Submit             string
+	Finish             string
+	DisplayBlank       string
+	DisplayFreeText    string
+	FreeTextQuestion   string
+	DisplayWordcloud   string
+	DisplayRandomGroup string
+	UpdateAll5Seconds  string
+	TabActiveContent   string
+	TabElements        string
+	TabSavedElements   string
+	SaveElement        string
+	DownloadButton     string
+	ClearElements      string
+	ReplaceElements    string
+	ResponseSent       string
+	Username           string
+	Password           string
+	Authenticate       string
+	CopyToClipboard    string
+	Title              string
+	Seperator          string
 }
 
 const defaultLanguage = "en"

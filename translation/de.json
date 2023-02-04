@@ -19,6 +19,7 @@
     "DisplayFreeText": "Freitext",
     "FreeTextQuestion": "Frage für Freitext",
     "DisplayWordcloud": "Wordcloud",
+    "DisplayRandomGroup": "Zufällige Gruppe",
     "UpdateAll5Seconds": "Ergebnisse werden alle 5 Sekunden aktualisiert.",
     "TabActiveContent": "Aktiver Inhalt",
     "TabElements": "Elemente",
@@ -31,5 +32,7 @@
     "Username": "Benutzername",
     "Password": "Passwort",
     "Authenticate": "Authentifizieren",
-    "CopyToClipboard": "In Zwischenablage kopieren"
+    "CopyToClipboard": "In Zwischenablage kopieren",
+    "Title": "Titel",
+	"Seperator": "Separator"
 }

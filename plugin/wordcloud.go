@@ -242,6 +242,7 @@ func (w *wordcloud) wordcloudWorker(ctx context.Context) {
 				wu.Labels = append(wu.Labels, k)
 				wu.Data = append(wu.Data, v)
 			}
+			w.l.Unlock()
 			if max <= 1 { // Needed due to log(1) = 0
 				max = 2
 			}
@@ -258,12 +259,10 @@ func (w *wordcloud) wordcloudWorker(ctx context.Context) {
 			j, err := json.Marshal(wu)
 			if err != nil {
 				log.Printf("wordcloud: Error marshaling update: (%s)", err.Error())
-				w.l.Unlock()
 				continue
 			}
 			w.adminData <- j
 			w.userData <- j
-			w.l.Unlock()
 		case <-done:
 			return
 		}

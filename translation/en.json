@@ -19,6 +19,7 @@
     "DisplayFreeText": "Free Text",
     "FreeTextQuestion": "Question for free text",
     "DisplayWordcloud": "Wordcloud",
+    "DisplayRandomGroup": "Random Group",
     "UpdateAll5Seconds": "Results get updated all 5 seconds.",
     "TabActiveContent": "Active Content",
     "TabElements": "Elements",
@@ -31,5 +32,7 @@
     "Username": "Username",
     "Password": "Password",
     "Authenticate": "Authenticate",
-    "CopyToClipboard": "Copy to clipboard"
+    "CopyToClipboard": "Copy to clipboard",
+    "Title": "Title",
+	"Seperator": "Seperator"
 }
