@@ -51,7 +51,7 @@ const randomgroupConfig = `
 </textarea><br>
 <label for="RandomGroupSeperator">{{.Translation.Seperator}}:</label> <input id="RandomGroupSeperator" type="text" value="<<<--->>>"><br>
 <p><button onclick="sendActivate('RandomGroup', randomgroupGetData())">{{.Translation.Activate}}</button></p>
-<p><button onclick="saveElement('RandomGroup', randomgroupGetData()), '{{.Translation.DisplayRandomGroup}}: '+document.getElementById('RandomGroupTitle').value.substring(0,80)+(document.getElementById('RandomGroupTitle').value.length>80?'[...]':''))">{{.Translation.SaveElement}}</button></p>
+<p><button onclick="saveElement('RandomGroup', randomgroupGetData(), '{{.Translation.DisplayRandomGroup}}: '+document.getElementById('RandomGroupTitle').value.substring(0,80)+(document.getElementById('RandomGroupTitle').value.length>80?'[...]':''))">{{.Translation.SaveElement}}</button></p>
 
 <script>
 function randomgroupGetData() {
