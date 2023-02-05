@@ -40,7 +40,7 @@ func init() {
 
 const wordcloudConfig = `
 <h1>%s</h1>
-<input class="fullwidth" type="text" id="wc_textarea" rows="4" autocomplete="off">
+<label for="wc_textarea">%s:</label> <input class="fullwidth" type="text" id="wc_textarea" rows="4" autocomplete="off">
 <p><button onclick="sendActivate('Wordcloud', document.getElementById('wc_textarea').value)">%s</button></p>
 <p><button onclick="saveElement('Wordcloud', document.getElementById('wc_textarea').value, '%s: '+document.getElementById('wc_textarea').value.substring(0,80)+(document.getElementById('wc_textarea').value.length>80?'[...]':''))">%s</button></p>`
 
@@ -134,7 +134,7 @@ type wordcloudUpdate struct {
 
 func (w *wordcloud) ConfigHTML() (string, template.HTML) {
 	tl := translation.GetDefaultTranslation()
-	return tl.DisplayWordcloud, template.HTML(fmt.Sprintf(wordcloudConfig, template.HTMLEscapeString(tl.DisplayWordcloud), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayWordcloud), template.HTMLEscapeString(tl.SaveElement)))
+	return tl.DisplayWordcloud, template.HTML(fmt.Sprintf(wordcloudConfig, template.HTMLEscapeString(tl.DisplayWordcloud), template.HTMLEscapeString(tl.Title), template.HTMLEscapeString(tl.Activate), template.HTMLEscapeString(tl.DisplayWordcloud), template.HTMLEscapeString(tl.SaveElement)))
 }
 
 func (w *wordcloud) AdminHTMLChannel(c chan<- template.HTML) {
