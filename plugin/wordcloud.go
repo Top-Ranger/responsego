@@ -23,6 +23,7 @@ import (
 	"html/template"
 	"log"
 	"math"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -256,6 +257,7 @@ func (w *wordcloud) wordcloudWorker(ctx context.Context) {
 					wu.Data[i] = 1
 				}
 			}
+			sort.Sort(&wu)
 			j, err := json.Marshal(wu)
 			if err != nil {
 				log.Printf("wordcloud: Error marshaling update: (%s)", err.Error())
@@ -267,4 +269,16 @@ func (w *wordcloud) wordcloudWorker(ctx context.Context) {
 			return
 		}
 	}
+}
+
+// Needed for sort.Sort
+
+func (wcu *wordcloudUpdate) Len() int {
+	return len(wcu.Labels)
+}
+func (wcu *wordcloudUpdate) Less(i, j int) bool {
+	return wcu.Data[i] > wcu.Data[j] // More score = earlier
+}
+func (wcu *wordcloudUpdate) Swap(i, j int) {
+	wcu.Data[i], wcu.Data[j], wcu.Labels[i], wcu.Labels[j] = wcu.Data[j], wcu.Data[i], wcu.Labels[j], wcu.Labels[i]
 }
