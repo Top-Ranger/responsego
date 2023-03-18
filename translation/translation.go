@@ -62,6 +62,7 @@ type Translation struct {
 	CopyToClipboard    string
 	Title              string
 	Seperator          string
+	CurrentlyConnected string
 }
 
 const defaultLanguage = "en"

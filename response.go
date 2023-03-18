@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020 Marcus Soll
+// Copyright 2020,2023 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,11 +57,12 @@ const (
 )
 
 const (
-	iconSlower   = "slower"
-	iconBreak    = "break"
-	iconFaster   = "faster"
-	iconQuestion = "question"
-	iconGood     = "good"
+	iconSlower      = "slower"
+	iconBreak       = "break"
+	iconFaster      = "faster"
+	iconQuestion    = "question"
+	iconGood        = "good"
+	numberConnected = "connected"
 )
 
 const globalAction = "_global"
@@ -251,7 +252,7 @@ func (r *response) AddAdmin(ws *websocket.Conn) {
 	r.sendIconUpdate(iconFaster, r.nFaster)
 	r.sendIconUpdate(iconQuestion, r.nQuestion)
 	r.sendIconUpdate(iconGood, r.nGood)
-
+	r.sendIconUpdate(numberConnected, len(r.users))
 }
 
 func (r *response) HasUser() bool {
@@ -298,6 +299,9 @@ func (r *response) WriteAdminPage(rw http.ResponseWriter) {
 
 func (r *response) responseMain() {
 	log.Printf("starting %s", r.Path)
+
+	updateUserTicker := time.NewTicker(5 * time.Second)
+	defer updateUserTicker.Stop()
 
 	done := r.ctx.Done()
 	for {
@@ -501,6 +505,13 @@ func (r *response) responseMain() {
 					default:
 					}
 				}
+			}()
+		case <-updateUserTicker.C:
+			func() {
+				r.l.Lock()
+				defer r.l.Unlock()
+
+				r.sendIconUpdate(numberConnected, len(r.users))
 			}()
 		case <-done:
 			// Function to use defer

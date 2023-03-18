@@ -46,6 +46,8 @@
             <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/question.svg" alt="{{.Translation.Question}}"/></td>
             <td style="border: none;"><img class="icon" src="{{.ServerPath}}/static/good.svg" alt="{{.Translation.Good}}"/></td>
             <td style="border: none;"><a onclick="resetIcons()">Reset icon count</a></td>
+            <td style="border: none;">-</td>
+            <td style="border: none;">{{.Translation.CurrentlyConnected}}</td>
           </tr>
           <tr style="border: none; background-color: inherit;">
             <td style="border: none;"><div id="_slower">0</div></td>
@@ -54,6 +56,8 @@
             <td style="border: none;"><div id="_question">0</div></td>
             <td style="border: none;"><div id="_good">0</div></td>
             <td style="border: none;"></td>
+            <td style="border: none;"></td>
+            <td style="border: none;"><div id="_connected">0</div></td>
           </tr>
         </table>
     </div>
@@ -231,6 +235,14 @@
       if(data.Action === "good") {
         try {
           document.getElementById("_good").innerText = data.Data
+        } catch (e) {
+          console.log(e);
+          ws.close(4000, e.toString().substring(0, 40));
+        }
+      }
+      if(data.Action === "connected") {
+        try {
+          document.getElementById("_connected").innerText = data.Data
         } catch (e) {
           console.log(e);
           ws.close(4000, e.toString().substring(0, 40));

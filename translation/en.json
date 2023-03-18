@@ -34,5 +34,6 @@
     "Authenticate": "Authenticate",
     "CopyToClipboard": "Copy to clipboard",
     "Title": "Title",
-	"Seperator": "Seperator"
+	"Seperator": "Seperator",
+    "CurrentlyConnected": "Currently connected"
 }
