@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020 Marcus Soll
+// Copyright 2020,2023 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -91,6 +91,10 @@ const questionAdmin = `
 		<td style="border: none;">{{$e.Count}}</td>
 	</tr>
 {{end}}
+	<tr style="border: none;">
+		<td style="border: none;"><em>{{.Translation.Submitted}}</em></td>
+		<td style="border: none;"><em>{{.Submitted}}</em></td>
+	</tr>
 </table>
 <p><button onclick="sendData('Question', 'close')">{{.Translation.Finish}}</button></p>
 `
@@ -103,6 +107,7 @@ type questionAdminStruct struct {
 		Question string
 		Count    int
 	}
+	Submitted   int
 	Translation translation.Translation
 }
 
@@ -117,6 +122,7 @@ type question struct {
 	Question        string
 	QuestionAnswers []string
 	AnswerCount     []int
+	NumberSubmitted int
 	NumberChanged   bool
 	AnswerLock      sync.Mutex
 	Finished        bool
@@ -211,6 +217,7 @@ func (q *question) Activate(b []byte) error {
 					q.AnswerLock.Lock()
 					if i < len(q.AnswerCount) {
 						q.AnswerCount[i]++
+						q.NumberSubmitted++
 						q.NumberChanged = true
 					}
 					q.AnswerLock.Unlock()
@@ -292,6 +299,7 @@ func (q *question) getAdminPage() template.HTML {
 			Question string
 			Count    int
 		}, 0, len(q.QuestionAnswers)),
+		Submitted:   q.NumberSubmitted,
 		Translation: translation.GetDefaultTranslation(),
 	}
 	for i := range q.AnswerCount {
