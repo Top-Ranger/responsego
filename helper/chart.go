@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020,2021 Marcus Soll
+// Copyright 2020,2021,2023 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ type ChartValue struct {
 }
 
 var chartTemplate = template.Must(template.New("chartTemplate").Parse(`
-<div class="chart">
+<div class="chart {{.ExtraClass}}">
 	<canvas id="{{.ID}}"></canvas>
 </div>
 <script>
@@ -90,6 +90,7 @@ type chartTemplateStruct struct {
 	Type         string
 	Label        string
 	Scales       bool
+	ExtraClass   string
 }
 
 func getColours(n int) []string {
@@ -129,11 +130,12 @@ func getColours(n int) []string {
 // User must embed chart.js.
 func PieChart(v []ChartValue, id, label string) template.HTML {
 	td := chartTemplateStruct{
-		Data:   v,
-		Colour: getColours(len(v)),
-		ID:     id,
-		Type:   "pie",
-		Label:  label,
+		Data:       v,
+		Colour:     getColours(len(v)),
+		ID:         id,
+		Type:       "pie",
+		Label:      label,
+		ExtraClass: "piechart",
 	}
 	output := bytes.NewBuffer(make([]byte, 0))
 	err := chartTemplate.Execute(output, td)
@@ -153,6 +155,7 @@ func BarChart(v []ChartValue, id, label string) template.HTML {
 		Type:         "bar",
 		Label:        label,
 		Scales:       true,
+		ExtraClass:   "barchart",
 	}
 	output := bytes.NewBuffer(make([]byte, 0))
 	err := chartTemplate.Execute(output, td)
