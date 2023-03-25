@@ -49,6 +49,7 @@ type Translation struct {
 	DisplayWordcloud      string
 	DisplayRandomGroup    string
 	DisplayMultipleChoice string
+	DisplayNumber         string
 	UpdateAll5Seconds     string
 	TabActiveContent      string
 	TabElements           string

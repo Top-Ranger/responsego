@@ -158,10 +158,20 @@ pre {
     max-width: 50vmin;
 }
 
+
 .barchart {
     width: 80vw;
     height: 70%;
     max-width: initial !important;
+}
+
+@media only screen and (min-width: 768px) {
+    .barchart {
+        width: 40vw;
+        height: 70%;
+        max-width: initial !important;
+    }
+    
 }
 
 .clickImage:active {
