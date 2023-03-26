@@ -50,6 +50,7 @@ type Translation struct {
 	DisplayRandomGroup    string
 	DisplayMultipleChoice string
 	DisplayNumber         string
+	DisplayTimeQuestion   string
 	UpdateAll5Seconds     string
 	TabActiveContent      string
 	TabElements           string
@@ -66,6 +67,8 @@ type Translation struct {
 	Title                 string
 	Seperator             string
 	CurrentlyConnected    string
+	Minutes               string
+	Precision             string
 }
 
 const defaultLanguage = "en"

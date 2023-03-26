@@ -23,6 +23,7 @@
     "DisplayRandomGroup": "Random Group",
     "DisplayMultipleChoice": "Multiple Choice",
     "DisplayNumber": "Number",
+    "DisplayTimeQuestion": "Time",
     "UpdateAll5Seconds": "Results get updated all 5 seconds.",
     "TabActiveContent": "Active Content",
     "TabElements": "Elements",
@@ -38,5 +39,7 @@
     "CopyToClipboard": "Copy to clipboard",
     "Title": "Title",
 	"Seperator": "Seperator",
-    "CurrentlyConnected": "Currently connected"
+    "CurrentlyConnected": "Currently connected",
+    "Minutes": "Minutes",
+	"Precision": "Precision"
 }
