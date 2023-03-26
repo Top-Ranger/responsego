@@ -246,6 +246,8 @@ func (n *number) numberGetChart() template.HTML {
 		keys = append(keys, k)
 	}
 
+	sort.Sort(sort.IntSlice(keys))
+
 	v := make([]helper.ChartValue, len(keys))
 
 	for i := range keys {
