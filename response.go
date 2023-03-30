@@ -68,7 +68,7 @@ const (
 const globalAction = "_global"
 
 const (
-	bufferSize = 10
+	bufferSize = 100
 )
 
 var userTemplate *template.Template
