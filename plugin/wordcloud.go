@@ -73,8 +73,7 @@ var wc = {
 	  },
 	  elements: {
       word: {
-        maxRotation: 0,
-		minRotation: 0
+        padding: 5
       },
     },
   },
