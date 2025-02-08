@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020,2023 Marcus Soll
+// Copyright 2020,2023,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -305,4 +305,21 @@ func (n *timeQuestion) getAdminPage() template.HTML {
 		log.Printf("error executing timeQuestionAdmin: %s", err.Error())
 	}
 	return template.HTML(buf.Bytes())
+}
+
+func (n *timeQuestion) GetAdminDownload() []byte {
+	n.AnswerLock.Lock()
+	defer n.AnswerLock.Unlock()
+
+	r := make(map[string]int, len(n.TimeQuestionAnswers))
+
+	for t := range n.TimeQuestionAnswers {
+		r[t.Format("15:04")] = n.TimeQuestionAnswers[t]
+	}
+
+	b, err := json.Marshal(r)
+	if err != nil {
+		return []byte(err.Error())
+	}
+	return b
 }

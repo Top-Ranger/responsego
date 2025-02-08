@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2023 Marcus Soll
+// Copyright 2023,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -268,6 +268,17 @@ func (w *wordcloud) wordcloudWorker(ctx context.Context) {
 			return
 		}
 	}
+}
+
+func (w *wordcloud) GetAdminDownload() []byte {
+	w.l.Lock()
+	defer w.l.Unlock()
+
+	b, err := json.Marshal(w.wordcloudMap)
+	if err != nil {
+		return []byte(err.Error())
+	}
+	return b
 }
 
 // Needed for sort.Sort

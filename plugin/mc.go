@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020,2023 Marcus Soll
+// Copyright 2020,2023,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -319,4 +319,22 @@ func (q *mc) getAdminPage() template.HTML {
 		log.Printf("error executing mcAdmin: %s", err.Error())
 	}
 	return template.HTML(buf.Bytes())
+}
+
+type mcResultStruct struct {
+	Question        string
+	QuestionAnswers []string
+	AnswerCount     []int
+	Submitted       int
+}
+
+func (q *mc) GetAdminDownload() []byte {
+	q.AnswerLock.Lock()
+	defer q.AnswerLock.Unlock()
+
+	b, err := json.Marshal(mcResultStruct{Question: q.Question, QuestionAnswers: q.QuestionAnswers, AnswerCount: q.AnswerCount, Submitted: q.NumberSubmitted})
+	if err != nil {
+		return []byte(err.Error())
+	}
+	return b
 }

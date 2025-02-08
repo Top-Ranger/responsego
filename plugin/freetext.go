@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020 Marcus Soll
+// Copyright 2020,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package plugin
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -199,4 +200,15 @@ func (f *freetext) getAdminPage() template.HTML {
 		log.Printf("error executing freetextAdmin: %s", err.Error())
 	}
 	return template.HTML(buf.Bytes())
+}
+
+func (f *freetext) GetAdminDownload() []byte {
+	f.AnswerLock.Lock()
+	defer f.AnswerLock.Unlock()
+
+	b, err := json.Marshal(f.Answers)
+	if err != nil {
+		return []byte(err.Error())
+	}
+	return b
 }

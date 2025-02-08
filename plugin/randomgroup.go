@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2023 Marcus Soll
+// Copyright 2023,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -324,4 +324,15 @@ func (rg *randomgroup) worker(ctx context.Context) {
 			return
 		}
 	}
+}
+
+func (rg *randomgroup) GetAdminDownload() []byte {
+	rg.l.Lock()
+	defer rg.l.Unlock()
+
+	b, err := json.Marshal(rg.userSelectMap)
+	if err != nil {
+		return []byte(err.Error())
+	}
+	return b
 }

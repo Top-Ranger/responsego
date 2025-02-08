@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020,2023 Marcus Soll
+// Copyright 2020,2023,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -290,4 +290,15 @@ func (n *number) getAdminPage() template.HTML {
 		log.Printf("error executing numberAdmin: %s", err.Error())
 	}
 	return template.HTML(buf.Bytes())
+}
+
+func (n *number) GetAdminDownload() []byte {
+	n.AnswerLock.Lock()
+	defer n.AnswerLock.Unlock()
+
+	b, err := json.Marshal(n.NumberAnswers)
+	if err != nil {
+		return []byte(err.Error())
+	}
+	return b
 }
