@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020,2023 Marcus Soll
+// Copyright 2020,2023,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,13 +47,14 @@ func init() {
 }
 
 const (
-	actionActivate    = "activate"
-	actionUserUpdate  = "user"
-	actionAdminUpdate = "admin"
-	actionResetIcons  = "resetIcon"
-	actionIcon        = "icon"
-	actionHTML        = "html"
-	actionData        = "data"
+	actionActivate      = "activate"
+	actionUserUpdate    = "user"
+	actionAdminUpdate   = "admin"
+	actionResetIcons    = "resetIcon"
+	actionIcon          = "icon"
+	actionHTML          = "html"
+	actionData          = "data"
+	actionAdminDownload = "admindownload"
 )
 
 const (
@@ -63,6 +64,8 @@ const (
 	iconQuestion    = "question"
 	iconGood        = "good"
 	numberConnected = "connected"
+	downloadData    = "download"
+	canDownload     = "candownload"
 )
 
 const globalAction = "_global"
@@ -86,6 +89,11 @@ type message struct {
 	Data   string
 }
 
+type readMessage struct {
+	ID      int
+	message []byte
+}
+
 type response struct {
 	l        sync.Mutex
 	ctx      context.Context
@@ -98,8 +106,8 @@ type response struct {
 	currentID         int
 	currentPluginName string
 	currentPlugin     registry.FeedbackPlugin
-	readUser          chan []byte
-	readAdmins        chan []byte
+	readUser          chan readMessage
+	readAdmins        chan readMessage
 	adminHTML         chan template.HTML
 	userHTML          chan template.HTML
 	adminData         chan []byte
@@ -131,7 +139,7 @@ type adminTemplateStruct struct {
 	ServerPath  string
 }
 
-func websocketReader(stopWriter context.CancelFunc, target chan<- []byte, ws *websocket.Conn, r *response, id int) {
+func websocketReader(stopWriter context.CancelFunc, target chan<- readMessage, ws *websocket.Conn, r *response, id int) {
 	defer stopWriter()
 	for {
 		_, b, err := ws.ReadMessage()
@@ -143,7 +151,7 @@ func websocketReader(stopWriter context.CancelFunc, target chan<- []byte, ws *we
 		}
 		t := time.NewTimer(time.Second)
 		select {
-		case target <- b:
+		case target <- readMessage{ID: id, message: b}:
 		case <-t.C:
 			log.Printf("socket read (%s): can not write to channel", r.Path)
 		}
@@ -192,8 +200,8 @@ func NewResponse(path, password string) *response {
 		users:             make(map[int]chan<- []byte),
 		currentID:         0,
 		currentPluginName: "",
-		readUser:          make(chan []byte, bufferSize),
-		readAdmins:        make(chan []byte, bufferSize),
+		readUser:          make(chan readMessage, bufferSize),
+		readAdmins:        make(chan readMessage, bufferSize),
 	}
 
 	go r.responseMain()
@@ -312,9 +320,9 @@ func (r *response) responseMain() {
 				r.l.Lock()
 				defer r.l.Unlock()
 				var m message
-				err := json.Unmarshal(b, &m)
+				err := json.Unmarshal(b.message, &m)
 				if err != nil {
-					log.Printf("read admin (%s): can not parse '%s': %s", r.Path, b, err.Error())
+					log.Printf("read admin (%s): can not parse '%s': %s", r.Path, b.message, err.Error())
 					return
 				}
 				switch m.Action {
@@ -375,6 +383,20 @@ func (r *response) responseMain() {
 					}
 					r.currentPlugin = p
 					r.currentPluginName = m.From
+					if _, ok := p.(registry.DownloadResultPlugin); ok {
+						m := message{From: globalAction, Action: canDownload, Data: ""}
+						b, err := json.Marshal(m)
+						if err != nil {
+							log.Printf("sending candownload (%s): %s", r.Path, err.Error())
+						} else {
+							for k := range r.admins {
+								select {
+								case r.admins[k] <- b:
+								default:
+								}
+							}
+						}
+					}
 				case actionAdminUpdate:
 					if m.From == r.currentPluginName {
 						select {
@@ -382,6 +404,24 @@ func (r *response) responseMain() {
 						default:
 						}
 					}
+				case actionAdminDownload:
+					dp, ok := r.currentPlugin.(registry.DownloadResultPlugin)
+					if ok {
+						result := dp.GetAdminDownload()
+						c, ok := r.admins[b.ID]
+						if ok {
+							m := message{From: globalAction, Action: downloadData, Data: string(result)}
+							b, err := json.Marshal(m)
+							if err != nil {
+								log.Printf("sending download (%s): %s", r.Path, err.Error())
+							}
+							select {
+							case c <- b:
+							default:
+							}
+						}
+					}
+
 				default:
 					// Invalid input - ignore
 				}
@@ -394,9 +434,9 @@ func (r *response) responseMain() {
 				defer r.l.Unlock()
 
 				var m message
-				err := json.Unmarshal(b, &m)
+				err := json.Unmarshal(b.message, &m)
 				if err != nil {
-					log.Printf("read admin (%s): can not parse '%s': %s", r.Path, b, err.Error())
+					log.Printf("read admin (%s): can not parse '%s': %s", r.Path, b.message, err.Error())
 					return
 				}
 				switch m.Action {

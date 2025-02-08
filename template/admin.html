@@ -71,7 +71,10 @@
     </div>
 
     <div id="_active" class="even contentbox tab" data-tabname="_active" style="height: 65%">
+        <p><button id="_adminDownloadButton" disabled onclick="sendRequestDownload()">{{.Translation.DownloadButton}}</button></p>
+        <div id="_activeContent" style="margin: 0;">
         <!---Current page-->
+        </div>
     </div>
 
     <div class="even contentbox tab" data-tabname="_saved" style="height: 65%">
@@ -251,7 +254,7 @@
       if(data.Action === "html") {
         try {
           data_function = null;
-          var a = document.getElementById("_active");
+          var a = document.getElementById("_activeContent");
           a.innerHTML = data.Data;
           var as = a.getElementsByTagName("script")
           for(var i = 0; i < as.length; i++) {
@@ -274,6 +277,15 @@
           console.log(e);
           ws.close(4000, e.toString().substring(0, 40));
         }
+      } else if (data.Action === "download") {
+        var downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(new Blob([data.Data], {type: ' text/plain'}));
+        downloadLink.download = window.location.pathname.split("/").slice(-1)[0] + ".data";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      } else if (data.Action === "candownload") {
+        document.getElementById("_adminDownloadButton").removeAttribute('disabled');
       }
     };
 
@@ -281,7 +293,18 @@
       var s = JSON.stringify({"From": from, "Action": "activate", "Data": data});
       try{
         ws.send(s);
+        document.getElementById("_adminDownloadButton").setAttribute('disabled', '');
         openTab("_active")
+      } catch (e) {
+        console.log(e);
+        ws.close(4000, e.toString().substring(0, 40));
+      }
+    }
+
+    function sendRequestDownload() {
+      var s = JSON.stringify({"From": "_global", "Action": "admindownload", "Data": ""});
+      try{
+        ws.send(s);
       } catch (e) {
         console.log(e);
         ws.close(4000, e.toString().substring(0, 40));

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020,2023 Marcus Soll
+// Copyright 2020,2023,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,6 +49,12 @@ type DataFeedbackPlugin interface {
 	FeedbackPlugin
 	AdminDataChannel(chan<- []byte)
 	UserDataChannel(chan<- []byte)
+}
+
+// DownloadResultPlugin is an extended version of FeedbackPlugin allowing to download current results
+type DownloadResultPlugin interface {
+	FeedbackPlugin
+	GetAdminDownload() []byte
 }
 
 // Authenticater allows to validate a username/password combination.

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright 2020,2021 Marcus Soll
+// Copyright 2020,2021,2025 Marcus Soll
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ var impressum []byte
 
 //go:embed static font js css
 var cachedFiles embed.FS
-var etagCompare string
 var cssTemplates *template.Template
 
 var robottxt = []byte(`User-agent: *
@@ -356,7 +355,6 @@ func rootHandle(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.AddUser(conn)
-	return
 }
 
 // RunServer starts the actual server.
